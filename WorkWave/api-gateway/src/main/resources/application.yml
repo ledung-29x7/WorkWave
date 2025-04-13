@@ -1,0 +1,38 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - RewritePath=/users/(?<segment>.*), /$\{segment}
+        - id: project-service
+          uri: lb://project-service
+          predicates:
+            - Path=/projects/**
+          filters:
+            - RewritePath=/projects/(?<segment>.*), /$\{segment}
+        - id: test-service
+          uri: lb://test-service
+          predicates:
+            - Path=/tests/**
+        - id: bug-tracking-service
+          uri: lb://bug-tracking-service
+          predicates:
+            - Path=/bugs/**
+        - id: release-service
+          uri: lb://release-service
+          predicates:
+            - Path=/releases/**
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8080

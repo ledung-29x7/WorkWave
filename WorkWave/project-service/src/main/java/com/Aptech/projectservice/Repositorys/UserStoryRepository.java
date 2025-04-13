@@ -1,0 +1,52 @@
+package com.Aptech.projectservice.Repositorys;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.Aptech.projectservice.Entitys.UserStory;
+
+import jakarta.transaction.Transactional;
+
+@Repository
+public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
+        @Modifying
+        @Transactional
+        @Query(value = "CALL CreateUserStory(:epicId, :sprintId, :name, :description, :priorityId, :statusId, :createdBy,:updatedBy)", nativeQuery = true)
+        void createUserStory(
+                        @Param("epicId") Integer epicId,
+                        @Param("sprintId") Integer sprintId,
+                        @Param("name") String name,
+                        @Param("description") String description,
+                        @Param("priorityId") Integer priorityId,
+                        @Param("statusId") Integer statusId,
+                        @Param("createdBy") String createdBy,
+                        @Param("updatedBy") String updatedBy);
+
+        @Query(value = "CALL GetUserStoryById(:storyId)", nativeQuery = true)
+        UserStory getUserStoryById(@Param("storyId") Integer storyId);
+
+        @Modifying
+        @Transactional
+        @Query(value = "CALL UpdateUserStory(:storyId, :sprintId, :name, :description, :priorityId, :statusId, :updatedBy)", nativeQuery = true)
+        void updateUserStory(
+                        @Param("storyId") Integer storyId,
+                        @Param("sprintId") Integer sprintId,
+                        @Param("name") String name,
+                        @Param("description") String description,
+                        @Param("priorityId") Integer priorityId,
+                        @Param("statusId") Integer statusId,
+                        @Param("updatedBy") String updatedBy);
+
+        @Modifying
+        @Transactional
+        @Query(value = "CALL DeleteUserStory(:storyId)", nativeQuery = true)
+        void deleteUserStory(@Param("storyId") Integer storyId);
+
+        @Query(value = "CALL GetUserStoriesByEpicId(:epicId)", nativeQuery = true)
+        List<UserStory> getUserStoriesByEpicId(@Param("epicId") Integer epicId);
+}
