@@ -24,6 +24,8 @@ public class Bug {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer bugId;
     String projectId;
+    Integer storyId;
+    Integer taskId;
     String title;
     String description;
     String reportedBy;

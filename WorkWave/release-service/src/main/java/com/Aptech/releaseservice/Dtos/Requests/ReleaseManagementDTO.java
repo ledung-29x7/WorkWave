@@ -1,7 +1,8 @@
-package com.Aptech.releaseservice.Dtos.Responses;
+package com.Aptech.releaseservice.Dtos.Requests;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Date;
+import java.sql.Timestamp;
+
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,10 @@ public class ReleaseManagementDTO {
     String projectId;
     String version;
     String description;
-    LocalDate releaseDate;
+    Date releaseDate;
     Integer statusId;
-    String statusName;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Timestamp createdAt;
+    Timestamp updatedAt;
     String createdBy;
     String updatedBy;
 }

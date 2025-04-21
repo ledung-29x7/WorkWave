@@ -12,7 +12,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TestStatusDTO {
+public class CreateTestExecutionDTO {
+    Integer testCaseId;
+    String executedBy;
     Integer statusId;
-    String statusName;
+    String comment;
 }

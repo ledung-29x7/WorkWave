@@ -32,6 +32,8 @@ public class BugServiceImpl implements BugService {
     public void createBug(CreateBugRequest request) {
         bugRepository.createBug(
                 request.getProjectId(),
+                request.getStoryId(),
+                request.getTaskId(),
                 request.getTitle(),
                 request.getDescription(),
                 request.getReportedBy(),
@@ -68,10 +70,10 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public List<BugDTO> getBugsByProject(String projectId) {
+    public List<BugDetailsDTO> getBugsByProject(String projectId) {
         return bugRepository.getBugsByProject(projectId)
                 .stream()
-                .map(bugMapper::toDTO)
+                .map(bugDetailsMapper::fromMap)
                 .collect(Collectors.toList());
     }
 

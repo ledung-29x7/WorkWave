@@ -1,43 +1,63 @@
 package com.Aptech.testservice.Services.Implements;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.Aptech.testservice.Dtos.Requests.CreateTestExecutionDTO;
 import com.Aptech.testservice.Dtos.Requests.TestExecutionDTO;
-import com.Aptech.testservice.Entitys.TestExecution;
 import com.Aptech.testservice.Mappers.TestExecutionMapper;
 import com.Aptech.testservice.Repositorys.TestExecutionRepository;
 import com.Aptech.testservice.Services.Interfaces.TestExecutionService;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class TestExecutionServiceImplement implements TestExecutionService {
-    private final TestExecutionRepository repository;
-    private final TestExecutionMapper mapper;
+    TestExecutionRepository repository;
+    TestExecutionMapper mapper;
 
-    public List<TestExecutionDTO> getAll() {
-        return mapper.toDtoList(repository.findAll());
+    @Override
+    public void create(CreateTestExecutionDTO dto) {
+        repository.createTestExecution(dto.getTestCaseId(), dto.getExecutedBy(), dto.getStatusId(), dto.getComment());
     }
 
-    public List<TestExecutionDTO> search(String executedBy, Integer statusId) {
-        return mapper.toDtoList(repository.search(executedBy, statusId));
+    @Override
+    public TestExecutionDTO getById(Integer id) {
+        return mapper.toDTO(repository.findExecutionById(id));
     }
 
-    public Object getSummary(String projectId) {
-        return repository.getSummary(projectId);
+    @Override
+    public void update(Integer id, CreateTestExecutionDTO dto) {
+        repository.updateExecution(id, dto.getExecutedBy(), dto.getStatusId(), dto.getComment());
     }
 
-    public TestExecutionDTO create(TestExecutionDTO dto) {
-        TestExecution entity = mapper.toEntity(dto);
-        entity.setExecutionDate(LocalDateTime.now());
-        return mapper.toDto(repository.save(entity));
-    }
-
+    @Override
     public void delete(Integer id) {
-        repository.deleteById(id);
+        repository.deleteExecution(id);
+    }
+
+    @Override
+    public List<TestExecutionDTO> getByTestCaseId(Integer testCaseId) {
+        return repository.findAllByTestCase(testCaseId)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TestExecutionDTO> searchTestExecutions(String executedBy, Integer statusId) {
+        return repository.searchTestExecutions(executedBy, statusId)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

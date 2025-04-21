@@ -1,17 +1,15 @@
 package com.Aptech.testservice.Mappers;
 
-import java.util.List;
-
 import org.mapstruct.Mapper;
 
+import com.Aptech.testservice.Dtos.Requests.CreateTestExecutionDTO;
 import com.Aptech.testservice.Dtos.Requests.TestExecutionDTO;
 import com.Aptech.testservice.Entitys.TestExecution;
 
 @Mapper(componentModel = "spring")
 public interface TestExecutionMapper {
-    TestExecutionDTO toDto(TestExecution entity);
+    TestExecutionDTO toDTO(TestExecution testExecution);
 
-    TestExecution toEntity(TestExecutionDTO dto);
+    TestExecution toEntity(CreateTestExecutionDTO dto);
 
-    List<TestExecutionDTO> toDtoList(List<TestExecution> entities);
 }

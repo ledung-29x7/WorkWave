@@ -24,11 +24,11 @@ import lombok.experimental.FieldDefaults;
 public class TestExecution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer testExecutionId;
+    Integer testExecutionId;
 
-    private Integer testCaseId;
-    private String executedBy;
-    private LocalDateTime executionDate;
-    private Integer statusId;
-    private String comment;
+    Integer testCaseId;
+    String executedBy;
+    LocalDateTime executionDate;
+    Integer statusId;
+    String comment;
 }

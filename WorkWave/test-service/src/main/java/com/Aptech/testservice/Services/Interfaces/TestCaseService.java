@@ -5,13 +5,13 @@ import java.util.List;
 import com.Aptech.testservice.Dtos.Requests.TestCaseDTO;
 
 public interface TestCaseService {
-    public List<TestCaseDTO> getAll();
+    void createTestCase(TestCaseDTO testCaseDTO);
 
-    public TestCaseDTO getById(Integer id);
+    TestCaseDTO getTestCaseById(Integer id);
 
-    public TestCaseDTO create(TestCaseDTO dto);
+    void updateTestCase(Integer id, TestCaseDTO testCaseDTO);
 
-    public TestCaseDTO update(Integer id, TestCaseDTO dto);
+    void deleteTestCase(Integer id);
 
-    public void delete(Integer id);
+    List<TestCaseDTO> getTestCasesByProject(String projectId);
 }

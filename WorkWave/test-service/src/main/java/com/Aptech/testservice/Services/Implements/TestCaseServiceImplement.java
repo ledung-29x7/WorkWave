@@ -1,56 +1,67 @@
 package com.Aptech.testservice.Services.Implements;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.Aptech.testservice.Dtos.Requests.TestCaseDTO;
-import com.Aptech.testservice.Entitys.TestCase;
 import com.Aptech.testservice.Mappers.TestCaseMapper;
 import com.Aptech.testservice.Repositorys.TestCaseRepository;
 import com.Aptech.testservice.Services.Interfaces.TestCaseService;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class TestCaseServiceImplement implements TestCaseService {
-    private final TestCaseRepository repository;
-    private final TestCaseMapper mapper;
+    TestCaseRepository repository;
+    TestCaseMapper mapper;
 
-    public List<TestCaseDTO> getAll() {
-        return mapper.toDtoList(repository.findAll());
+    @Override
+    public void createTestCase(TestCaseDTO dto) {
+        repository.createTestCase(
+                dto.getProjectId(),
+                dto.getStoryId(),
+                dto.getTestName(),
+                dto.getDescription(),
+                dto.getExpectedResult(),
+                dto.getActualResult(),
+                dto.getStatusId(),
+                dto.getCreatedBy(),
+                dto.getExecutedBy());
     }
 
-    public TestCaseDTO getById(Integer id) {
-        return repository.findById(id).map(mapper::toDto)
-                .orElseThrow(() -> new RuntimeException("TestCase not found"));
+    @Override
+    public TestCaseDTO getTestCaseById(Integer id) {
+        return mapper.toDTO(repository.getTestCaseById(id));
     }
 
-    public TestCaseDTO create(TestCaseDTO dto) {
-        TestCase entity = mapper.toEntity(dto);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
-        return mapper.toDto(repository.save(entity));
+    @Override
+    public void updateTestCase(Integer id, TestCaseDTO dto) {
+        repository.updateTestCase(
+                id,
+                dto.getTestName(),
+                dto.getDescription(),
+                dto.getExpectedResult(),
+                dto.getActualResult(),
+                dto.getStatusId(),
+                dto.getExecutedBy());
     }
 
-    public TestCaseDTO update(Integer id, TestCaseDTO dto) {
-        TestCase entity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TestCase not found"));
-
-        entity.setTestName(dto.getTestName());
-        entity.setDescription(dto.getDescription());
-        entity.setExpectedResult(dto.getExpectedResult());
-        entity.setActualResult(dto.getActualResult());
-        entity.setStatusId(dto.getStatusId());
-        entity.setExecutedBy(dto.getExecutedBy());
-        entity.setUpdatedAt(LocalDateTime.now());
-
-        return mapper.toDto(repository.save(entity));
+    @Override
+    public void deleteTestCase(Integer id) {
+        repository.deleteTestCase(id);
     }
 
-    public void delete(Integer id) {
-        repository.deleteById(id);
+    @Override
+    public List<TestCaseDTO> getTestCasesByProject(String projectId) {
+        return repository.getTestCasesByProject(projectId)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

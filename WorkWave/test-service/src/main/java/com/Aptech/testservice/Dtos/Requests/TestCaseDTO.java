@@ -15,16 +15,14 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestCaseDTO {
-    private Integer testCaseId;
-    private String projectId;
-    private Integer storyId;
-    private String testName;
-    private String description;
-    private String expectedResult;
-    private String actualResult;
-    private Integer statusId;
-    private String createdBy;
-    private String executedBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    Integer testCaseId;
+    String projectId;
+    Integer storyId;
+    String testName;
+    String description;
+    String expectedResult;
+    String actualResult;
+    Integer statusId;
+    String createdBy;
+    String executedBy;
 }

@@ -23,8 +23,8 @@ import lombok.experimental.FieldDefaults;
 public class TestStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer statusId;
+    Integer statusId;
 
     @Column(unique = true, nullable = false)
-    private String statusName;
+    String statusName;
 }

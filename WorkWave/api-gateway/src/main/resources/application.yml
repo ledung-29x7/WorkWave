@@ -22,14 +22,20 @@ spring:
           uri: lb://test-service
           predicates:
             - Path=/tests/**
+          filters:
+            - RewritePath=/tests/(?<segment>.*), /$\{segment}
         - id: bug-tracking-service
           uri: lb://bug-tracking-service
           predicates:
             - Path=/bugs/**
+          filters:
+            - RewritePath=/bugs/(?<segment>.*), /$\{segment}
         - id: release-service
           uri: lb://release-service
           predicates:
             - Path=/releases/**
+          filters:
+            - RewritePath=/releases/(?<segment>.*), /$\{segment}
 eureka:
   client:
     service-url:

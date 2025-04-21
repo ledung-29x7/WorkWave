@@ -22,7 +22,7 @@ import com.Aptech.bugtrackingservice.Services.Interfaces.BugService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/bugs")
+@RequestMapping("/bug")
 @RequiredArgsConstructor
 public class BugController {
 
@@ -53,7 +53,7 @@ public class BugController {
     }
 
     @GetMapping("/projects/{projectId}/bugs")
-    public ResponseEntity<List<BugDTO>> getBugsByProject(@PathVariable("projectId") String projectId) {
+    public ResponseEntity<List<BugDetailsDTO>> getBugsByProject(@PathVariable("projectId") String projectId) {
         return ResponseEntity.ok(bugService.getBugsByProject(projectId));
     }
 

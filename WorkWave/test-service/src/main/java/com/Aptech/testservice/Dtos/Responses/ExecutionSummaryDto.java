@@ -1,4 +1,4 @@
-package com.Aptech.testservice.Dtos.Requests;
+package com.Aptech.testservice.Dtos.Responses;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TestStatusDTO {
-    Integer statusId;
-    String statusName;
+public class ExecutionSummaryDto {
+    Long total;
+    Long passed;
+    Long failed;
+    Long inProgress;
 }

@@ -1,7 +1,7 @@
 package com.Aptech.releaseservice.Entitys;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,16 +40,16 @@ public class ReleaseManagementEntity {
     String description;
 
     @Column(name = "ReleaseDate")
-    LocalDate releaseDate;
+    Date releaseDate;
 
     @Column(name = "StatusId")
     Integer statusId;
 
     @Column(name = "CreatedAt")
-    LocalDateTime createdAt;
+    Timestamp createdAt;
 
     @Column(name = "UpdatedAt")
-    LocalDateTime updatedAt;
+    Timestamp updatedAt;
 
     @Column(name = "CreatedBy")
     String createdBy;

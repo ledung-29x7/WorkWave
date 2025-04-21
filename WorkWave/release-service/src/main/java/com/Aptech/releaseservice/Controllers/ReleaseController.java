@@ -2,6 +2,9 @@ package com.Aptech.releaseservice.Controllers;
 
 import java.util.List;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,17 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Aptech.releaseservice.Dtos.Responses.ReleaseManagementDTO;
+import com.Aptech.releaseservice.Dtos.Requests.ReleaseManagementDTO;
+import com.Aptech.releaseservice.Dtos.Responses.ReleaseResponseDTO;
 import com.Aptech.releaseservice.Services.Interfaces.ReleaseService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/releases")
+@RequestMapping("/release")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ReleaseController {
-
-    private final ReleaseService releaseService;
+    ReleaseService releaseService;
 
     // Tạo Release mới
     @PostMapping
@@ -34,8 +39,8 @@ public class ReleaseController {
 
     // Lấy Release theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<ReleaseManagementDTO> getReleaseById(@PathVariable("id") Integer releaseId) {
-        ReleaseManagementDTO releaseManagementDTO = releaseService.getReleaseById(releaseId);
+    public ResponseEntity<ReleaseResponseDTO> getReleaseById(@PathVariable("id") Integer releaseId) {
+        ReleaseResponseDTO releaseManagementDTO = releaseService.getReleaseById(releaseId);
         return ResponseEntity.ok(releaseManagementDTO);
     }
 
@@ -57,9 +62,9 @@ public class ReleaseController {
 
     // Lấy tất cả Releases theo ProjectId
     @GetMapping("/projects/{projectId}")
-    public ResponseEntity<List<ReleaseManagementDTO>> getReleasesByProjectId(
+    public ResponseEntity<List<ReleaseResponseDTO>> getReleasesByProjectId(
             @PathVariable("projectId") String projectId) {
-        List<ReleaseManagementDTO> releases = releaseService.getReleasesByProjectId(projectId);
+        List<ReleaseResponseDTO> releases = releaseService.getReleasesByProjectId(projectId);
         return ResponseEntity.ok(releases);
     }
 }

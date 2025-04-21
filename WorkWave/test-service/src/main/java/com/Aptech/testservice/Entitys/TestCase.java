@@ -24,19 +24,19 @@ import lombok.experimental.FieldDefaults;
 public class TestCase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer testCaseId;
+    Integer testCaseId;
 
-    private String projectId;
-    private Integer storyId;
-    private String testName;
-    private String description;
-    private String expectedResult;
-    private String actualResult;
+    String projectId;
+    Integer storyId;
+    String testName;
+    String description;
+    String expectedResult;
+    String actualResult;
 
-    private Integer statusId;
-    private String createdBy;
-    private String executedBy;
+    Integer statusId;
+    String createdBy;
+    String executedBy;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }

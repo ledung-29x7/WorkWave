@@ -17,6 +17,8 @@ import lombok.experimental.FieldDefaults;
 public class BugDTO {
     Integer bugId;
     String projectId;
+    Integer storyId;
+    Integer taskId;
     String title;
     String description;
     String reportedBy;

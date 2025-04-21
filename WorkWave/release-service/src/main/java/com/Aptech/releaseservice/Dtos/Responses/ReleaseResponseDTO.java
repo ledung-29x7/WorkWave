@@ -1,4 +1,7 @@
-package com.Aptech.bugtrackingservice.Dtos.Requests;
+package com.Aptech.releaseservice.Dtos.Responses;
+
+import java.sql.Date;
+import java.sql.Timestamp;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,16 +15,15 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateBugRequest {
+public class ReleaseResponseDTO {
+    Integer releaseId;
     String projectId;
-    Integer storyId;
-    Integer taskId;
-    String title;
+    String version;
     String description;
-    String reportedBy;
-    String assignedTo;
-    Integer severityId;
-    Integer priorityId;
-    Integer statusId;
+    Date releaseDate;
+    String statusName;
+    Timestamp createdAt;
+    Timestamp updatedAt;
     String createdBy;
+    String updatedBy;
 }

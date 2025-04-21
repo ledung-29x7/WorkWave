@@ -2,16 +2,19 @@ package com.Aptech.testservice.Services.Interfaces;
 
 import java.util.List;
 
+import com.Aptech.testservice.Dtos.Requests.CreateTestExecutionDTO;
 import com.Aptech.testservice.Dtos.Requests.TestExecutionDTO;
 
 public interface TestExecutionService {
-    public List<TestExecutionDTO> getAll();
+    void create(CreateTestExecutionDTO dto);
 
-    public List<TestExecutionDTO> search(String executedBy, Integer statusId);
+    TestExecutionDTO getById(Integer id);
 
-    public Object getSummary(String projectId);
+    void update(Integer id, CreateTestExecutionDTO dto);
 
-    public TestExecutionDTO create(TestExecutionDTO dto);
+    void delete(Integer id);
 
-    public void delete(Integer id);
+    List<TestExecutionDTO> getByTestCaseId(Integer testCaseId);
+
+    List<TestExecutionDTO> searchTestExecutions(String executedBy, Integer statusId);
 }

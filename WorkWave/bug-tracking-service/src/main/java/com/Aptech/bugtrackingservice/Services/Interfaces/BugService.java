@@ -17,7 +17,7 @@ public interface BugService {
 
     void deleteBug(Integer id);
 
-    List<BugDTO> getBugsByProject(String projectId);
+    List<BugDetailsDTO> getBugsByProject(String projectId);
 
     BugDetailsDTO getBugDetailsById(Integer bugId);
 

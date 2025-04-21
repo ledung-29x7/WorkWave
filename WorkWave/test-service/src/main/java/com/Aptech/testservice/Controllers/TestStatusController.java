@@ -18,7 +18,7 @@ import com.Aptech.testservice.Services.Interfaces.TestStatusService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/test-status")
+@RequestMapping("/teststatus")
 @RequiredArgsConstructor
 public class TestStatusController {
     private final TestStatusService service;
@@ -35,7 +35,7 @@ public class TestStatusController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
