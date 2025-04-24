@@ -2,10 +2,10 @@ package com.Aptech.projectservice.Controllers;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.Aptech.projectservice.Dtos.Request.EpicCreationRequest;
+import com.Aptech.projectservice.Dtos.Response.ApiResponse;
 import com.Aptech.projectservice.Dtos.Response.EpicResponse;
 import com.Aptech.projectservice.Services.Interfaces.EpicService;
 
@@ -23,34 +23,51 @@ public class EpicController {
     EpicService epicService;
 
     @GetMapping("/{projectId}/project")
-    public ResponseEntity<List<EpicResponse>> getEpics(@PathVariable("projectId") String projectId) {
-        return ResponseEntity.ok(epicService.getEpicsByProject(projectId));
+    public ApiResponse<List<EpicResponse>> getEpics(@PathVariable("projectId") String projectId) {
+        List<EpicResponse> epics = epicService.getEpicsByProject(projectId);
+        return ApiResponse.<List<EpicResponse>>builder()
+                .status("SUCCESS")
+                .data(epics)
+                .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EpicResponse> getEpicById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(epicService.getEpicById(id));
+    public ApiResponse<EpicResponse> getEpicById(@PathVariable("id") Integer id) {
+        EpicResponse epic = epicService.getEpicById(id);
+        return ApiResponse.<EpicResponse>builder()
+                .status("SUCCESS")
+                .data(epic)
+                .build();
     }
 
     @PostMapping("/{projectId}/project")
-    public ResponseEntity<Void> createEpic(
+    public ApiResponse<String> createEpic(
             @PathVariable("projectId") String projectId,
             @RequestBody EpicCreationRequest dto) {
         epicService.createEpic(projectId, dto);
-        return ResponseEntity.ok().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Epic created successfully")
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateEpic(
+    public ApiResponse<String> updateEpic(
             @PathVariable("id") Integer id,
             @RequestBody EpicCreationRequest dto) {
         epicService.updateEpic(id, dto);
-        return ResponseEntity.ok().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Epic updated successfully")
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEpic(@PathVariable("id") Integer id) {
+    public ApiResponse<String> deleteEpic(@PathVariable("id") Integer id) {
         epicService.deleteEpic(id);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Epic deleted successfully")
+                .build();
     }
 }

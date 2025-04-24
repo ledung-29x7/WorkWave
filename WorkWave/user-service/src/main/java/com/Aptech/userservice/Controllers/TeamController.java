@@ -19,31 +19,38 @@ public class TeamController {
     TeamService teamService;
 
     @PostMapping
-    ApiResponse<TeamResponse> CreateTeam(@RequestBody TeamCreationRequest request) {
+    public ApiResponse<TeamResponse> createTeam(@RequestBody TeamCreationRequest request) {
+        TeamResponse response = teamService.CreateTeam(request);
         return ApiResponse.<TeamResponse>builder()
-                .result(teamService.CreateTeam(request))
+                .status("SUCCESS")
+                .data(response)
                 .build();
     }
 
     @GetMapping
-    ApiResponse<List<TeamResponse>> GetAllTeams() {
+    public ApiResponse<List<TeamResponse>> getAllTeams() {
+        List<TeamResponse> teams = teamService.GetAllTeam();
         return ApiResponse.<List<TeamResponse>>builder()
-                .result(teamService.GetAllTeam())
+                .status("SUCCESS")
+                .data(teams)
                 .build();
     }
 
-
-    @GetMapping("/projectId")
-    ApiResponse<List<TeamResponse>> GetAllTeamsByProjectId(@PathVariable("projectId") String projectId ) {
+    @GetMapping("/project/{projectId}")
+    public ApiResponse<List<TeamResponse>> getAllTeamsByProjectId(@PathVariable("projectId") String projectId) {
+        List<TeamResponse> teams = teamService.GetAllTeamByProjectId(projectId);
         return ApiResponse.<List<TeamResponse>>builder()
-                .result(teamService.GetAllTeamByProjectId(projectId))
+                .status("SUCCESS")
+                .data(teams)
                 .build();
     }
 
     @GetMapping("/{teamId}")
-    ApiResponse<TeamResponse> GetTeamById(@PathVariable("teamId") Integer teamId) {
+    public ApiResponse<TeamResponse> getTeamById(@PathVariable("teamId") Integer teamId) {
+        TeamResponse team = teamService.GetTeamById(teamId);
         return ApiResponse.<TeamResponse>builder()
-                .result(teamService.GetTeamById(teamId))
+                .status("SUCCESS")
+                .data(team)
                 .build();
     }
 

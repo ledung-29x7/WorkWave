@@ -1,4 +1,4 @@
-package com.Aptech.userservice.Exceptions;
+package com.Aptech.releaseservice.Exceptions;
 
 import lombok.Getter;
 

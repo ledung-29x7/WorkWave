@@ -1,4 +1,4 @@
-package com.Aptech.userservice.Exceptions;
+package com.Aptech.testservice.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

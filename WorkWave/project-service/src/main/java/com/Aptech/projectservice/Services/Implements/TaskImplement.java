@@ -64,4 +64,9 @@ public class TaskImplement implements TaskService {
         List<Task> tasks = taskRepository.getTasksByStoryId(storyId);
         return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<Task> getTasksByAssignedToAndProjectId(String assignedTo, String projectId) {
+        return taskRepository.getTaskByAssignedToAndProjectId(assignedTo, projectId);
+    }
 }

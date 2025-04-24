@@ -2,11 +2,10 @@ package com.Aptech.projectservice.Controllers;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.Aptech.projectservice.Dtos.Request.ProjectDto;
+import com.Aptech.projectservice.Dtos.Response.ApiResponse;
 import com.Aptech.projectservice.Services.Interfaces.ProjectService;
 
 import lombok.AccessLevel;
@@ -23,30 +22,47 @@ public class ProjectController {
     ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<Void> createProject(@RequestBody ProjectDto dto) {
+    public ApiResponse<String> createProject(@RequestBody ProjectDto dto) {
         projectService.createProject(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Project created successfully")
+                .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDto> getProjectById(@PathVariable String id) {
-        return ResponseEntity.ok(projectService.getProjectById(id));
+    public ApiResponse<ProjectDto> getProjectById(@PathVariable("id") String id) {
+        ProjectDto project = projectService.getProjectById(id);
+        return ApiResponse.<ProjectDto>builder()
+                .status("SUCCESS")
+                .data(project)
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProject(@PathVariable String id, @RequestBody ProjectDto dto) {
+    public ApiResponse<String> updateProject(@PathVariable("id") String id, @RequestBody ProjectDto dto) {
         projectService.updateProject(id, dto);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Project updated successfully")
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable String id) {
+    public ApiResponse<String> deleteProject(@PathVariable("id") String id) {
         projectService.deleteProject(id);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Project deleted successfully")
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectDto>> getAllProjects() {
-        return ResponseEntity.ok(projectService.getAllProjects());
+    public ApiResponse<List<ProjectDto>> getAllProjects() {
+        List<ProjectDto> projects = projectService.getAllProjects();
+        return ApiResponse.<List<ProjectDto>>builder()
+                .status("SUCCESS")
+                .data(projects)
+                .build();
     }
 }

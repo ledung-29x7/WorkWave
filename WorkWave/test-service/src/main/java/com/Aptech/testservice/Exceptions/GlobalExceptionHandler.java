@@ -1,4 +1,4 @@
-package com.Aptech.userservice.Exceptions;
+package com.Aptech.testservice.Exceptions;
 
 import java.text.ParseException;
 
@@ -7,7 +7,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.Aptech.userservice.Dtos.Response.ApiResponse;
+import com.Aptech.testservice.Dtos.Responses.ApiResponse;
 
 import lombok.extern.slf4j.Slf4j;
 

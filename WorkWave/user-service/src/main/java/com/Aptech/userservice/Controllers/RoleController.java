@@ -27,29 +27,39 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping
-    ApiResponse<RoleResponse> CreateRole(@RequestBody RoleCreationRequest request) {
+    public ApiResponse<RoleResponse> createRole(@RequestBody RoleCreationRequest request) {
+        RoleResponse role = roleService.CreateRole(request);
         return ApiResponse.<RoleResponse>builder()
-                .result(roleService.CreateRole(request))
+                .status("SUCCESS")
+                .data(role)
                 .build();
     }
 
     @GetMapping
-    ApiResponse<List<RoleResponse>> GetAllRole() {
+    public ApiResponse<List<RoleResponse>> getAllRoles() {
+        List<RoleResponse> roles = roleService.GetAllRole();
         return ApiResponse.<List<RoleResponse>>builder()
-                .result(roleService.GetAllRole())
+                .status("SUCCESS")
+                .data(roles)
                 .build();
     }
 
     @GetMapping("/{roleId}")
-    ApiResponse<RoleResponse> GetRoleById(@PathVariable("roleId") Integer roleId) {
+    public ApiResponse<RoleResponse> getRoleById(@PathVariable("roleId") Integer roleId) {
+        RoleResponse role = roleService.GetRoleById(roleId);
         return ApiResponse.<RoleResponse>builder()
-                .result(roleService.GetRoleById(roleId))
+                .status("SUCCESS")
+                .data(role)
                 .build();
     }
 
     @DeleteMapping("/{roleId}")
-    ApiResponse<String> DeleteRole(@PathVariable("roleId") Integer roleId) {
+    public ApiResponse<String> deleteRole(@PathVariable("roleId") Integer roleId) {
         roleService.DeleteRole(roleId);
-        return ApiResponse.<String>builder().result("Role has been deleted").build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Role has been deleted")
+                .message("Successfully deleted role with ID: " + roleId)
+                .build();
     }
 }

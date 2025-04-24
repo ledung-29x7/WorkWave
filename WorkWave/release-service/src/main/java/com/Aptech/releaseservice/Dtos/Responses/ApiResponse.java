@@ -1,4 +1,4 @@
-package com.Aptech.projectservice.Dtos.Response;
+package com.Aptech.releaseservice.Dtos.Responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

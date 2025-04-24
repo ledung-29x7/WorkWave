@@ -1,5 +1,7 @@
 package com.Aptech.projectservice.Entitys;
 
+import java.sql.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,4 +41,12 @@ public class Task {
     Integer estimatedHours;
     @Column(name = "LoggedHours")
     Integer loggedHours;
+    Date createdAt;
+    @Column(name = "UpdatedAt")
+    Date updatedAt;
+    @Column(name = "CreatedBy")
+    String createdBy;
+    @Column(name = "UpdatedBy")
+    String updatedBy;
+
 }

@@ -1,10 +1,6 @@
 package com.Aptech.userservice.Controllers;
 
-import java.util.List;
-
 import com.Aptech.userservice.Dtos.Request.AssignTeamRequest;
-import com.Aptech.userservice.Dtos.Request.UserUpdateRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,8 +31,10 @@ public class UserController {
 
     @PostMapping("/createuser")
     public ApiResponse<UserResponse> CreateUser(@RequestBody UserCreationRequest request) {
+        UserResponse response = userService.CreateUser(request);
         return ApiResponse.<UserResponse>builder()
-                .result(userService.CreateUser(request))
+                .status("success")
+                .data(response)
                 .build();
     }
 
@@ -46,36 +44,47 @@ public class UserController {
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(required = false) String searchName,
             @RequestParam(required = false) String searchEmail) {
-        var result = userService.getAllUsers(pageNumber, pageSize, searchName, searchEmail);
+        GetAllUserResponse result = userService.getAllUsers(pageNumber, pageSize, searchName, searchEmail);
         return ApiResponse.<GetAllUserResponse>builder()
-                .result(result)
+                .status("success")
+                .data(result)
                 .build();
     }
 
     @PostMapping("/delete/{userId}")
-    ApiResponse<String> DeleteUser(@PathVariable("userId") String userId) {
+    public ApiResponse<String> DeleteUser(@PathVariable("userId") String userId) {
         userService.DeleteUser(userId);
-        return ApiResponse.<String>builder().result("User has been deleted").build();
+        return ApiResponse.<String>builder()
+                .status("success")
+                .data("User has been deleted")
+                .build();
     }
 
     @PostMapping("/assignrole")
-    ApiResponse<String> AssignRole(@RequestBody UserRoleCreationRequest request) {
+    public ApiResponse<String> AssignRole(@RequestBody UserRoleCreationRequest request) {
         userService.AssignRole(request);
-        return ApiResponse.<String>builder().result("Assigled ").build();
+        return ApiResponse.<String>builder()
+                .status("success")
+                .data("Assigned")
+                .build();
     }
 
     @GetMapping("/{userId}")
     public ApiResponse<UserResponse> GetUser(@PathVariable("userId") String userId) {
         UserResponse user = userService.getUserById(userId);
         return ApiResponse.<UserResponse>builder()
-                .result(user)
+                .status("success")
+                .data(user)
                 .build();
     }
 
     @PostMapping("/assignteam")
     public ApiResponse<String> AssignTeam(@RequestBody AssignTeamRequest request) {
         userService.AssignTeam(request);
-        return  ApiResponse.<String>builder().result("Assigled").build();
+        return ApiResponse.<String>builder()
+                .status("success")
+                .data("Assigned")
+                .build();
     }
 
 }

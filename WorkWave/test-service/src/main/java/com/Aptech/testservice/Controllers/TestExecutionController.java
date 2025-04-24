@@ -2,8 +2,6 @@ package com.Aptech.testservice.Controllers;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Aptech.testservice.Dtos.Requests.CreateTestExecutionDTO;
 import com.Aptech.testservice.Dtos.Requests.TestExecutionDTO;
+import com.Aptech.testservice.Dtos.Responses.ApiResponse;
 import com.Aptech.testservice.Services.Interfaces.TestExecutionService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,39 +26,58 @@ public class TestExecutionController {
     private final TestExecutionService service;
 
     @PostMapping("/testcases/{testCaseId}/executions")
-    public ResponseEntity<Void> create(@PathVariable("testCaseId") Integer testCaseId,
+    public ApiResponse<String> create(@PathVariable("testCaseId") Integer testCaseId,
             @RequestBody CreateTestExecutionDTO dto) {
         dto.setTestCaseId(testCaseId);
         service.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Test execution created successfully")
+                .build();
     }
 
     @GetMapping("/executions/{id}")
-    public ResponseEntity<TestExecutionDTO> getById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ApiResponse<TestExecutionDTO> getById(@PathVariable("id") Integer id) {
+        return ApiResponse.<TestExecutionDTO>builder()
+                .status("SUCCESS")
+                .data(service.getById(id))
+                .build();
     }
 
     @PutMapping("/executions/{id}")
-    public ResponseEntity<Void> update(@PathVariable("id") Integer id, @RequestBody CreateTestExecutionDTO dto) {
+    public ApiResponse<String> update(@PathVariable("id") Integer id,
+            @RequestBody CreateTestExecutionDTO dto) {
         service.update(id, dto);
-        return ResponseEntity.ok().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Test execution updated successfully")
+                .build();
     }
 
     @DeleteMapping("/executions/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+    public ApiResponse<String> delete(@PathVariable("id") Integer id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.<String>builder()
+                .status("SUCCESS")
+                .data("Test execution deleted successfully")
+                .build();
     }
 
     @GetMapping("/testcases/{testCaseId}/executions")
-    public ResponseEntity<List<TestExecutionDTO>> getByTestCaseId(@PathVariable("testCaseId") Integer testCaseId) {
-        return ResponseEntity.ok(service.getByTestCaseId(testCaseId));
+    public ApiResponse<List<TestExecutionDTO>> getByTestCaseId(@PathVariable("testCaseId") Integer testCaseId) {
+        return ApiResponse.<List<TestExecutionDTO>>builder()
+                .status("SUCCESS")
+                .data(service.getByTestCaseId(testCaseId))
+                .build();
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<TestExecutionDTO>> search(
+    public ApiResponse<List<TestExecutionDTO>> search(
             @RequestParam String executedBy,
             @RequestParam Integer statusId) {
-        return ResponseEntity.ok(service.searchTestExecutions(executedBy, statusId));
+        return ApiResponse.<List<TestExecutionDTO>>builder()
+                .status("SUCCESS")
+                .data(service.searchTestExecutions(executedBy, statusId))
+                .build();
     }
 }

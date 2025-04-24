@@ -26,4 +26,6 @@ public class TaskResponseDto {
     Integer remainingHours;
     Date createdAt;
     Date updatedAt;
+    String createdBy;
+    String updatedBy;
 }
