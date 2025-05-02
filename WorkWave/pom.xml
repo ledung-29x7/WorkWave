@@ -23,6 +23,7 @@
 		<module>test-service</module>
 		<module>bug-tracking-service</module>
 		<module>release-service</module>
+		<module>common-event</module>
 	</modules>
 	<url />
 	<licenses>

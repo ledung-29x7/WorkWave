@@ -1,6 +1,7 @@
 package com.Aptech.userservice.Services.Implement;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,8 @@ import com.Aptech.userservice.Repositorys.TeamMemberRepository;
 import com.Aptech.userservice.Repositorys.UserRepository;
 import com.Aptech.userservice.Repositorys.UserRoleRepository;
 import com.Aptech.userservice.Services.Interfaces.UserService;
+import com.Aptech.userservice.event.KafkaProducerService;
+import com.aptech.common.event.user.UserCreatedEvent;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -38,20 +41,35 @@ public class UserServiceImplement implements UserService {
     PasswordEncoder passwordEncoder;
     UserRoleRepository userRoleRepository;
     TeamMemberRepository teamMemberRepository;
+    KafkaProducerService kafkaProducerService;
 
     @Override
     public UserResponse CreateUser(UserCreationRequest request) {
         if (userRepository.ExistsByUserName(request.getUserName()) == 1) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
-        User user = userMapper.toUser(request);
 
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // Tạo userId trước
+        String userId = UUID.randomUUID().toString();
 
-        userRepository.CreateUser(user.getUserName(), user.getEmail(), user.getPassword());
+        // Mã hóa mật khẩu
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
 
-        return userMapper.toUserResponse(user);
+        // Gọi stored procedure để tạo user
+        userRepository.CreateUser(userId, request.getUserName(), request.getEmail(), encodedPassword);
 
+        // Lấy lại entity từ DB
+        User createdUser = userRepository.findEntityByUserName(request.getUserName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Gửi event Kafka
+        UserCreatedEvent event = new UserCreatedEvent(
+                createdUser.getUserId(),
+                createdUser.getEmail(),
+                createdUser.getUserName());
+        kafkaProducerService.send("user-events", event);
+
+        return userMapper.toUserResponse(createdUser);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.Aptech.userservice.Repositorys;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,11 +24,15 @@ public interface UserRepository extends JpaRepository<User, String> {
 
         @Modifying
         @Transactional
-        @Query(value = "CALL CreateUser(:userName, :email, :password)", nativeQuery = true)
+        @Query(value = "CALL CreateUser(:userId,:userName, :email, :password)", nativeQuery = true)
         void CreateUser(
+                        @Param("userId") String userId,
                         @Param("userName") String userName,
                         @Param("email") String email,
                         @Param("password") String password);
+
+        @Query(value = "Call findEntityByUserName(:userName)", nativeQuery = true)
+        Optional<User> findEntityByUserName(@Param("userName") String userName);
 
         @Query(value = "CALL GetAllUsers(:pageNumber, :pageSize, :searchName, :searchEmail)", nativeQuery = true)
         List<UserProjection> getAllUsers(

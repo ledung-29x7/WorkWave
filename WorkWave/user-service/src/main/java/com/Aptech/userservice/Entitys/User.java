@@ -1,5 +1,7 @@
 package com.Aptech.userservice.Entitys;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,4 +33,10 @@ public class User {
     String email;
     @Column(name = "Password")
     String password;
+    @Column(name = "IsActive")
+    Boolean isActive;
+    @Column(name = "CreatedAt")
+    Date createdAt;
+    @Column(name = "UpdatedAt")
+    Date updatedAt;
 }

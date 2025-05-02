@@ -81,13 +81,6 @@ public class TaskController {
                 .build();
     }
 
-    // @GetMapping("/search")
-    // public List<Task> getTasksByAssignedToAndProjectId(
-    // @RequestParam(required = false) String assignedTo,
-    // @RequestParam(required = false) String projectId) {
-    // return taskService.getTasksByAssignedToAndProjectId(assignedTo, projectId);
-    // }
-
     @GetMapping("/search")
     public ApiResponse<List<Task>> getTasksByAssignedToAndProjectId(
             @RequestParam(required = false) String assignedTo,
