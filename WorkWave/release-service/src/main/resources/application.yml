@@ -2,13 +2,18 @@ spring:
   application:
     name: release-service
   kafka:
-    bootstrap-servers: localhost:9092
     consumer:
-      group-id: ${spring.application.name} # Tự động theo tên service
+      group-id: ${spring.application.name}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
-        spring.json.trusted.packages: "com.aptech.common.event.*"
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "com.aptech.common.event"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: java.util.HashMap
+    listener:
+      ack-mode: manual
+
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

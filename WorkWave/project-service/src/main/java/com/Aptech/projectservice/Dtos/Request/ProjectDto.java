@@ -2,6 +2,8 @@ package com.Aptech.projectservice.Dtos.Request;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +20,13 @@ public class ProjectDto {
     String projectId;
     String name;
     String description;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate startDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate endDate;
+
     Integer statusId;
     String createdBy;
     String updatedBy;

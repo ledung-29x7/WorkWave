@@ -11,6 +11,9 @@ import com.Aptech.projectservice.Entitys.Project;
 import com.Aptech.projectservice.Mappers.ProjectMapper;
 import com.Aptech.projectservice.Repositorys.ProjectRepository;
 import com.Aptech.projectservice.Services.Interfaces.ProjectService;
+import com.Aptech.projectservice.event.KafkaProducerService;
+import com.aptech.common.event.project.ProjectCreatedEvent;
+import com.aptech.common.event.project.ProjectDeletedEvent;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +25,21 @@ import lombok.experimental.FieldDefaults;
 public class ProjectImplement implements ProjectService {
     ProjectRepository repository;
     ProjectMapper mapper;
+    KafkaProducerService kafkaProducerService;
 
     @Override
     public void createProject(ProjectDto dto) {
         String projectId = UUID.randomUUID().toString();
         repository.createProject(projectId, dto.getName(), dto.getDescription(), dto.getStartDate(), dto.getEndDate(),
                 dto.getStatusId(), dto.getCreatedBy(), dto.getUpdatedBy());
+
+        ProjectCreatedEvent event = new ProjectCreatedEvent(
+                projectId,
+                dto.getName(),
+                dto.getDescription(),
+                dto.getCreatedBy());
+
+        kafkaProducerService.send("project-events", event);
     }
 
     @Override
@@ -45,6 +57,8 @@ public class ProjectImplement implements ProjectService {
     @Override
     public void deleteProject(String id) {
         repository.deleteProject(id);
+        ProjectDeletedEvent event = new ProjectDeletedEvent(id);
+        kafkaProducerService.send("project-events", event);
     }
 
     @Override
