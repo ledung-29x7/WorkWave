@@ -2,10 +2,10 @@ package com.Aptech.testservice.Services.Implements;
 
 import org.springframework.stereotype.Service;
 
-import com.Aptech.testservice.Entitys.ProjectLookup;
 import com.Aptech.testservice.Repositorys.ProjectLookupRepository;
 import com.Aptech.testservice.Services.ProjectLookupService;
 import com.aptech.common.event.project.ProjectCreatedEvent;
+import com.aptech.common.event.project.ProjectUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,4 +30,13 @@ public class ProjectLookupServiceImplement implements ProjectLookupService {
     public void deleteProjectLookup(String projectId) {
         projectLookupRepository.deleteProjectLookup(projectId);
     }
+
+    @Override
+    public void update(ProjectUpdatedEvent event) {
+        projectLookupRepository.updateProjectLookup(
+                event.getProjectId(),
+                event.getName(),
+                event.getDescription());
+    }
+
 }

@@ -1,38 +1,51 @@
 package com.Aptech.projectservice.kafka;
 
+import java.util.Map;
+
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import com.Aptech.projectservice.Entitys.UserLookup;
-import com.Aptech.projectservice.Repositorys.UserLookupRepository;
+import com.Aptech.projectservice.Services.Interfaces.UserLookupService;
 import com.aptech.common.event.user.UserCreatedEvent;
+import com.aptech.common.event.user.UserDeletedEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserEventListener {
 
-    private final UserLookupRepository userLookupRepository;
+    private final ObjectMapper objectMapper;
+    private final UserLookupService userLookupService;
 
     @KafkaListener(topics = "user-events", groupId = "${spring.application.name}")
-    public void handleUserCreated(UserCreatedEvent event) {
-        log.info("✅ [PROJECT] Received USER_CREATED: {}", event);
+    public void handle(Map<String, Object> payload,
+            @Header("eventType") String eventType,
+            Acknowledgment ack) {
+        try {
+            log.info("📨 [USER EVENT] Received eventType: {}", eventType);
 
-        if (userLookupRepository.ExistsByUserId(event.getUserId()) == 1)
-            return;
+            switch (eventType) {
+                case "UserCreatedEvent" -> {
+                    UserCreatedEvent event = objectMapper.convertValue(payload, UserCreatedEvent.class);
+                    userLookupService.save(event);
+                }
+                case "UserDeletedEvent" -> {
+                    UserDeletedEvent event = objectMapper.convertValue(payload, UserDeletedEvent.class);
+                    userLookupService.delete(event.getUserId());
+                }
+                default -> log.warn("⚠️ Unknown eventType: {}", eventType);
+            }
 
-        // Lưu vào bảng phụ
-        UserLookup lookup = new UserLookup();
-        lookup.setUserId(event.getUserId());
-        lookup.setUserName(event.getUserName());
-        lookup.setEmail(event.getEmail());
-
-        // userLookupRepository.save(lookup);
-        userLookupRepository.CreateUserLockup(lookup.getUserId(), lookup.getUserName(), lookup.getEmail());
-        log.info("✅ [PROJECT] Saved to UserLookup: {}", lookup);
+        } catch (Exception e) {
+            log.error("❌ Error handling user event: {}", eventType, e);
+        } finally {
+            ack.acknowledge();
+        }
     }
-
 }

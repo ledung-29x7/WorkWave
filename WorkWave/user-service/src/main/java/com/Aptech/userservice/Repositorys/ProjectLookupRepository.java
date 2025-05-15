@@ -12,21 +12,28 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface ProjectLookupRepository extends JpaRepository<ProjectLookup, String> {
-    @Modifying
-    @Transactional
-    @Query(value = "CALL saveProjectLookup(:projectId, :name, :description, :createdBy)", nativeQuery = true)
-    void saveProjectLookup(
-            @Param("projectId") String projectId,
-            @Param("name") String name,
-            @Param("description") String description,
-            @Param("createdBy") String createdBy);
+        @Modifying
+        @Transactional
+        @Query(value = "CALL saveProjectLookup(:projectId, :name, :description, :createdBy)", nativeQuery = true)
+        void saveProjectLookup(
+                        @Param("projectId") String projectId,
+                        @Param("name") String name,
+                        @Param("description") String description,
+                        @Param("createdBy") String createdBy);
 
-    @Query(value = "CALL ExistsByProjectId(:projectId)", nativeQuery = true)
-    int ExistsByProjectId(@Param("projectId") String projectId);
+        @Query(value = "CALL ExistsByProjectId(:projectId)", nativeQuery = true)
+        int ExistsByProjectId(@Param("projectId") String projectId);
 
-    @Modifying
-    @Transactional
-    @Query(value = "CALL deleteProjectLookup(:projectId)", nativeQuery = true)
-    void deleteProjectLookup(@Param("projectId") String projectId);
+        @Modifying
+        @Transactional
+        @Query(value = "CALL deleteProjectLookup(:projectId)", nativeQuery = true)
+        void deleteProjectLookup(@Param("projectId") String projectId);
+
+        @Modifying
+        @Transactional
+        @Query(value = "CALL updateProjectLookup(:projectId, :name, :description)", nativeQuery = true)
+        void updateProjectLookup(@Param("projectId") String projectId,
+                        @Param("name") String name,
+                        @Param("description") String description);
 
 }

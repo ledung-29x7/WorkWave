@@ -1,6 +1,9 @@
 package com.Aptech.userservice.Controllers;
 
 import com.Aptech.userservice.Dtos.Request.AssignTeamRequest;
+
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +17,10 @@ import com.Aptech.userservice.Dtos.Request.UserRoleCreationRequest;
 import com.Aptech.userservice.Dtos.Response.ApiResponse;
 import com.Aptech.userservice.Dtos.Response.GetAllUserResponse;
 import com.Aptech.userservice.Dtos.Response.UserResponse;
+import com.Aptech.userservice.Entitys.ProjectLookup;
 import com.Aptech.userservice.Services.Interfaces.UserService;
 
+import jakarta.ws.rs.PathParam;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -46,6 +51,15 @@ public class UserController {
             @RequestParam(required = false) String searchEmail) {
         GetAllUserResponse result = userService.getAllUsers(pageNumber, pageSize, searchName, searchEmail);
         return ApiResponse.<GetAllUserResponse>builder()
+                .status("success")
+                .data(result)
+                .build();
+    }
+
+    @GetMapping("/project/{userId}")
+    public ApiResponse<List<ProjectLookup>> getProjectByUserId(@PathVariable("userId") String userId) {
+        List<ProjectLookup> result = userService.GetProjectsByUserId(userId);
+        return ApiResponse.<List<ProjectLookup>>builder()
                 .status("success")
                 .data(result)
                 .build();

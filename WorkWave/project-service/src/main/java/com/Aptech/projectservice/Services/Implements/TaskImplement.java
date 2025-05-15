@@ -11,6 +11,10 @@ import com.Aptech.projectservice.Entitys.Task;
 import com.Aptech.projectservice.Mappers.TaskMapper;
 import com.Aptech.projectservice.Repositorys.TaskRepository;
 import com.Aptech.projectservice.Services.Interfaces.TaskService;
+import com.Aptech.projectservice.event.KafkaProducerService;
+import com.aptech.common.event.project.TaskCreatedEvent;
+import com.aptech.common.event.project.TaskDeletedEvent;
+import com.aptech.common.event.project.TaskUpdatedEvent;
 
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -23,6 +27,7 @@ import lombok.experimental.FieldDefaults;
 public class TaskImplement implements TaskService {
     TaskRepository taskRepository;
     TaskMapper taskMapper;
+    KafkaProducerService kafkaProducerService;
 
     @Transactional
     public void createTask(Integer storyId, TaskRequestDto request) {
@@ -34,6 +39,21 @@ public class TaskImplement implements TaskService {
                 request.getStatusId(),
                 request.getEstimatedHours(),
                 request.getCreatedBy());
+        Integer taskId = taskRepository.getLatestCreatedTaskId(storyId, request.getCreatedBy());
+        TaskCreatedEvent event = new TaskCreatedEvent(
+                taskId,
+                storyId,
+                request.getName(),
+                request.getDescription(),
+                request.getStatusId(),
+                request.getEstimatedHours(),
+                request.getLoggedHours(),
+                request.getRemainingHours(),
+                request.getAssignedTo(),
+                request.getCreatedBy());
+
+        kafkaProducerService.send("task-events", event);
+
     }
 
     public TaskResponseDto getTaskById(Integer id) {
@@ -53,11 +73,25 @@ public class TaskImplement implements TaskService {
                 request.getLoggedHours(),
                 request.getRemainingHours(),
                 request.getUpdatedBy());
+        TaskUpdatedEvent event = new TaskUpdatedEvent(
+                id,
+                request.getName(),
+                request.getDescription(),
+                request.getStatusId(),
+                request.getEstimatedHours(),
+                request.getLoggedHours(),
+                request.getRemainingHours(),
+                request.getAssignedTo(),
+                request.getUpdatedBy());
+
+        kafkaProducerService.send("task-events", event);
     }
 
     @Transactional
     public void deleteTask(Integer id) {
         taskRepository.deleteTask(id);
+        TaskDeletedEvent event = new TaskDeletedEvent(id);
+        kafkaProducerService.send("task-events", event);
     }
 
     public List<TaskResponseDto> getTasksByStory(Integer storyId) {

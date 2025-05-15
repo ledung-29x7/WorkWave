@@ -11,6 +11,10 @@ import com.Aptech.projectservice.Entitys.UserStory;
 import com.Aptech.projectservice.Mappers.UserStoryMapper;
 import com.Aptech.projectservice.Repositorys.UserStoryRepository;
 import com.Aptech.projectservice.Services.Interfaces.UserStoryService;
+import com.Aptech.projectservice.event.KafkaProducerService;
+import com.aptech.common.event.project.UserStoryCreatedEvent;
+import com.aptech.common.event.project.UserStoryDeletedEvent;
+import com.aptech.common.event.project.UserStoryUpdatedEvent;
 
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -23,6 +27,7 @@ import lombok.experimental.FieldDefaults;
 public class UserStoryImplement implements UserStoryService {
     UserStoryRepository userStoryRepository;
     UserStoryMapper userStoryMapper;
+    KafkaProducerService kafkaProducerService;
 
     @Transactional
     public void createUserStory(Integer epicId, UserStoryRequestDto request) {
@@ -35,6 +40,19 @@ public class UserStoryImplement implements UserStoryService {
                 request.getStatusId(),
                 request.getCreatedBy(),
                 request.getUpdatedBy());
+
+        Integer storyId = userStoryRepository.getLatestCreatedStoryId(request.getCreatedBy());
+
+        UserStoryCreatedEvent event = new UserStoryCreatedEvent(
+                storyId,
+                request.getName(),
+                request.getDescription(),
+                epicId,
+                request.getPriorityId(),
+                request.getStatusId(),
+                request.getCreatedBy());
+
+        kafkaProducerService.send("userstory-events", event);
     }
 
     public UserStoryResponseDto getUserStoryById(Integer id) {
@@ -46,17 +64,31 @@ public class UserStoryImplement implements UserStoryService {
     public void updateUserStory(Integer id, UserStoryRequestDto request) {
         userStoryRepository.updateUserStory(
                 id,
+                request.getEpicId(),
                 request.getSprintId(),
                 request.getName(),
                 request.getDescription(),
                 request.getPriorityId(),
                 request.getStatusId(),
                 request.getUpdatedBy());
+
+        UserStoryUpdatedEvent event = new UserStoryUpdatedEvent(
+                id,
+                request.getName(),
+                request.getDescription(),
+                request.getEpicId(),
+                request.getPriorityId(),
+                request.getStatusId());
+
+        kafkaProducerService.send("userstory-events", event);
     }
 
     @Transactional
     public void deleteUserStory(Integer id) {
         userStoryRepository.deleteUserStory(id);
+        UserStoryDeletedEvent event = new UserStoryDeletedEvent(id);
+        kafkaProducerService.send("userstory-events", event);
+
     }
 
     public List<UserStoryResponseDto> getUserStoriesByEpic(Integer epicId) {

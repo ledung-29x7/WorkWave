@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import com.Aptech.projectservice.Entitys.Task;
@@ -54,5 +53,9 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
         List<Task> getTaskByAssignedToAndProjectId(
                         @Param("p_assignedTo") String assignedTo,
                         @Param("p_projectId") String projectId);
+
+        @Query(value = "CALL getLatestCreatedTaskId(:storyId, :createdBy)", nativeQuery = true)
+        Integer getLatestCreatedTaskId(@Param("storyId") Integer storyId,
+                        @Param("createdBy") String createdBy);
 
 }

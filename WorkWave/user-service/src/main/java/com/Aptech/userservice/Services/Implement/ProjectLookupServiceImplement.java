@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.Aptech.userservice.Repositorys.ProjectLookupRepository;
 import com.Aptech.userservice.Services.Interfaces.ProjectLookupService;
 import com.aptech.common.event.project.ProjectCreatedEvent;
+import com.aptech.common.event.project.ProjectUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,14 @@ public class ProjectLookupServiceImplement implements ProjectLookupService {
     @Override
     public void deleteProjectLookup(String projectId) {
         projectLookupRepository.deleteProjectLookup(projectId);
+    }
+
+    @Override
+    public void update(ProjectUpdatedEvent event) {
+        projectLookupRepository.updateProjectLookup(
+                event.getProjectId(),
+                event.getName(),
+                event.getDescription());
     }
 
 }

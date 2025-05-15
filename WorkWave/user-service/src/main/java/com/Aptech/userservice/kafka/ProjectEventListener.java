@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.Aptech.userservice.Services.Interfaces.ProjectLookupService;
 import com.aptech.common.event.project.ProjectCreatedEvent;
 import com.aptech.common.event.project.ProjectDeletedEvent;
+import com.aptech.common.event.project.ProjectUpdatedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,11 @@ public class ProjectEventListener {
                     ProjectDeletedEvent event = objectMapper.convertValue(payload, ProjectDeletedEvent.class);
                     projectLookupService.deleteProjectLookup(event.getProjectId());
                 }
+                case "ProjectUpdatedEvent" -> {
+                    ProjectUpdatedEvent event = objectMapper.convertValue(payload, ProjectUpdatedEvent.class);
+                    projectLookupService.update(event);
+                }
+
                 default -> log.warn("⚠️ Unknown eventType: {}", eventType);
             }
 

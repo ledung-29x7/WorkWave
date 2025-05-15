@@ -32,9 +32,10 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
 
         @Modifying
         @Transactional
-        @Query(value = "CALL UpdateUserStory(:storyId, :sprintId, :name, :description, :priorityId, :statusId, :updatedBy)", nativeQuery = true)
+        @Query(value = "CALL UpdateUserStory(:storyId, :epicId, :sprintId, :name, :description, :priorityId, :statusId, :updatedBy)", nativeQuery = true)
         void updateUserStory(
                         @Param("storyId") Integer storyId,
+                        @Param("epicId") Integer epicId,
                         @Param("sprintId") Integer sprintId,
                         @Param("name") String name,
                         @Param("description") String description,
@@ -49,4 +50,7 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
 
         @Query(value = "CALL GetUserStoriesByEpicId(:epicId)", nativeQuery = true)
         List<UserStory> getUserStoriesByEpicId(@Param("epicId") Integer epicId);
+
+        @Query(value = "CALL getLatestCreatedStoryId(:createdBy)", nativeQuery = true)
+        Integer getLatestCreatedStoryId(@Param("createdBy") String createdBy);
 }

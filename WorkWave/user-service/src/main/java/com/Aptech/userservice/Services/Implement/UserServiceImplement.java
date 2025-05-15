@@ -14,6 +14,7 @@ import com.Aptech.userservice.Dtos.Response.GetAllUserResponse;
 import com.Aptech.userservice.Dtos.Response.UserDetailProjection;
 import com.Aptech.userservice.Dtos.Response.UserProjection;
 import com.Aptech.userservice.Dtos.Response.UserResponse;
+import com.Aptech.userservice.Entitys.ProjectLookup;
 import com.Aptech.userservice.Entitys.User;
 import com.Aptech.userservice.Exceptions.AppException;
 import com.Aptech.userservice.Exceptions.ErrorCode;
@@ -24,6 +25,7 @@ import com.Aptech.userservice.Repositorys.UserRoleRepository;
 import com.Aptech.userservice.Services.Interfaces.UserService;
 import com.Aptech.userservice.event.KafkaProducerService;
 import com.aptech.common.event.user.UserCreatedEvent;
+import com.aptech.common.event.user.UserDeletedEvent;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -104,6 +106,8 @@ public class UserServiceImplement implements UserService {
     @Override
     public void DeleteUser(String userId) {
         userRepository.DeleteUser(userId);
+        UserDeletedEvent event = new UserDeletedEvent(userId);
+        kafkaProducerService.send("user-events", event);
     }
 
     @Override
@@ -123,6 +127,11 @@ public class UserServiceImplement implements UserService {
     @Override
     public void AssignTeam(AssignTeamRequest request) {
         teamMemberRepository.AssignTeam(request.getTeamId(), request.getUserId());
+    }
+
+    @Override
+    public List<ProjectLookup> GetProjectsByUserId(String userId) {
+        return userRepository.getProjectByUserId(userId);
     }
 
 }

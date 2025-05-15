@@ -9,10 +9,8 @@ import lombok.Data;
 @Entity
 @Data
 public class UserLookup {
-
     @Id
     private String userId;
-
     private String userName;
     private String email;
     private LocalDateTime createdAt = LocalDateTime.now();

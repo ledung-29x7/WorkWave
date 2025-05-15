@@ -14,6 +14,7 @@ import com.Aptech.projectservice.Services.Interfaces.ProjectService;
 import com.Aptech.projectservice.event.KafkaProducerService;
 import com.aptech.common.event.project.ProjectCreatedEvent;
 import com.aptech.common.event.project.ProjectDeletedEvent;
+import com.aptech.common.event.project.ProjectUpdatedEvent;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,12 @@ public class ProjectImplement implements ProjectService {
     public void updateProject(String id, ProjectDto dto) {
         repository.updateProject(id, dto.getName(), dto.getDescription(), dto.getStartDate(), dto.getEndDate(),
                 dto.getStatusId(), dto.getUpdatedBy());
+        ProjectUpdatedEvent event = new ProjectUpdatedEvent(
+                id,
+                dto.getName(),
+                dto.getDescription());
+
+        kafkaProducerService.send("project-events", event);
     }
 
     @Override

@@ -13,9 +13,8 @@ import lombok.Data;
 public class ProjectLookup {
     @Id
     private String projectId;
-
     private String name;
     private String description;
     private String createdBy;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }

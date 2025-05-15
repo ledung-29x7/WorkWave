@@ -19,4 +19,10 @@ public interface UserLookupRepository extends JpaRepository<UserLookup, String> 
 
     @Query(value = "CALL ExistsByUserId(:userId)", nativeQuery = true)
     int ExistsByUserId(@Param("userId") String userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "CALL deleteUserLookup(:userId)", nativeQuery = true)
+    void deleteUserLookup(@Param("userId") String userId);
+
 }

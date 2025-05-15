@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.Aptech.userservice.Dtos.Response.UserDetailProjection;
 import com.Aptech.userservice.Dtos.Response.UserProjection;
 import com.Aptech.userservice.Dtos.Response.UserRessponseForLoginProjection;
+import com.Aptech.userservice.Entitys.ProjectLookup;
 import com.Aptech.userservice.Entitys.User;
 
 import jakarta.transaction.Transactional;
@@ -51,4 +52,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
         @Query(value = "CALL GetUserByUserName(:userName)", nativeQuery = true)
         UserRessponseForLoginProjection getUserByUserName(@Param("userName") String userName);
+
+        @Query(value = "Call GetProjectsByUserId(:userId)", nativeQuery = true)
+        List<ProjectLookup> getProjectByUserId(@Param("userId") String userId);
 }
