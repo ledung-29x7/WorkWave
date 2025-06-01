@@ -29,18 +29,10 @@ public class ProjectImplement implements ProjectService {
     KafkaProducerService kafkaProducerService;
 
     @Override
-    public void createProject(ProjectDto dto) {
-        String projectId = UUID.randomUUID().toString();
-        repository.createProject(projectId, dto.getName(), dto.getDescription(), dto.getStartDate(), dto.getEndDate(),
-                dto.getStatusId(), dto.getCreatedBy(), dto.getUpdatedBy());
-
-        ProjectCreatedEvent event = new ProjectCreatedEvent(
-                projectId,
-                dto.getName(),
-                dto.getDescription(),
-                dto.getCreatedBy());
-
-        kafkaProducerService.send("project-events", event);
+    public void createProject(ProjectCreatedEvent dto) {
+        repository.createProject(dto.getProjectId(), dto.getName(), dto.getDescription(), dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getStatusId(), dto.getCreatedBy());
     }
 
     @Override
@@ -50,15 +42,10 @@ public class ProjectImplement implements ProjectService {
     }
 
     @Override
-    public void updateProject(String id, ProjectDto dto) {
-        repository.updateProject(id, dto.getName(), dto.getDescription(), dto.getStartDate(), dto.getEndDate(),
+    public void updateProject(ProjectUpdatedEvent dto) {
+        repository.updateProject(dto.getProjectId(), dto.getName(), dto.getDescription(), dto.getStartDate(),
+                dto.getEndDate(),
                 dto.getStatusId(), dto.getUpdatedBy());
-        ProjectUpdatedEvent event = new ProjectUpdatedEvent(
-                id,
-                dto.getName(),
-                dto.getDescription());
-
-        kafkaProducerService.send("project-events", event);
     }
 
     @Override

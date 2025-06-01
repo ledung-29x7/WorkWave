@@ -17,22 +17,22 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
   datasource:
-    username: adminuser
-    password: Example@123!
-    url: jdbc:mysql://my-mysql-server.mysql.database.azure.com:3306/bug_tracking_service_db?useSSL=true&serverTimezone=UTC
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bug_tracking_service_db
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: example@123!
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-  # jpa:
-  #   hibernate:
-  #     ddl-auto: update
+    # hibernate:
+    #   ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 server:
   port: 8084
+jwt:
+  public-key: classpath:rsa/public.pem

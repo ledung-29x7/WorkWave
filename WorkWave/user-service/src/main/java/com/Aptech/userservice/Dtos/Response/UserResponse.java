@@ -1,22 +1,26 @@
 package com.Aptech.userservice.Dtos.Response;
 
-import java.util.Set;
+import com.Aptech.userservice.Entitys.Users;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@Builder
 public class UserResponse {
-    String userId;
-    String userName;
-    String email;
-    Set<RoleResponse> roles;
+    private String userId;
+    private String userName;
+    private String email;
+    private Boolean isActive;
+
+    public UserResponse(Users user) {
+        this.userId = user.getUserId();
+        this.userName = user.getUserName();
+        this.email = user.getEmail();
+        this.isActive = user.getIsActive();
+    }
 }

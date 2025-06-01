@@ -16,15 +16,14 @@ import com.Aptech.projectservice.Entitys.Project;
 public interface ProjectRepository extends JpaRepository<Project, String> {
         @Modifying
         @Transactional
-        @Query(value = "CALL sp_create_project(:projectId, :name, :description, :startDate, :endDate, :statusId, :createdBy, :updatedBy)", nativeQuery = true)
+        @Query(value = "CALL sp_create_project(:projectId, :name, :description, :startDate, :endDate, :statusId, :createdBy)", nativeQuery = true)
         void createProject(@Param("projectId") String projectId,
                         @Param("name") String name,
                         @Param("description") String description,
                         @Param("startDate") LocalDate startDate,
                         @Param("endDate") LocalDate endDate,
                         @Param("statusId") Integer statusId,
-                        @Param("createdBy") String createdBy,
-                        @Param("updatedBy") String updatedBy);
+                        @Param("createdBy") String createdBy);
 
         @Modifying
         @Transactional

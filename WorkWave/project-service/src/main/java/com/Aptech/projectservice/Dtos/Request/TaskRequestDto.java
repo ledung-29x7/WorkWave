@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TaskRequestDto {
+    Integer storyId;
     String assignedTo;
     String name;
     String description;
@@ -20,6 +21,4 @@ public class TaskRequestDto {
     Integer estimatedHours;
     Integer loggedHours;
     Integer remainingHours;
-    String createdBy;
-    String updatedBy;
 }

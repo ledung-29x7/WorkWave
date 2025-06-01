@@ -3,7 +3,7 @@ package com.Aptech.bugtrackingservice.Services.Implements;
 import org.springframework.stereotype.Service;
 
 import com.Aptech.bugtrackingservice.Repositorys.ProjectLookupRepository;
-import com.Aptech.bugtrackingservice.Services.ProjectLookupService;
+import com.Aptech.bugtrackingservice.Services.Interfaces.ProjectLookupService;
 import com.aptech.common.event.project.ProjectCreatedEvent;
 import com.aptech.common.event.project.ProjectUpdatedEvent;
 
@@ -24,7 +24,10 @@ public class ProjectLookupServiceImplement implements ProjectLookupService {
                 event.getProjectId(),
                 event.getName(),
                 event.getDescription(),
-                event.getCreatedBy());
+                event.getCreatedBy(),
+                event.getStartDate(),
+                event.getEndDate(),
+                event.getStatusId());
     }
 
     @Override
@@ -37,7 +40,11 @@ public class ProjectLookupServiceImplement implements ProjectLookupService {
         projectLookupRepository.updateProjectLookup(
                 event.getProjectId(),
                 event.getName(),
-                event.getDescription());
+                event.getDescription(),
+                event.getStartDate(),
+                event.getEndDate(),
+                event.getStatusId(),
+                event.getUpdatedBy());
     }
 
 }

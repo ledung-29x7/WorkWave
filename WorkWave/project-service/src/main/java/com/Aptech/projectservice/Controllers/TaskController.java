@@ -2,6 +2,7 @@ package com.Aptech.projectservice.Controllers;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Aptech.projectservice.Configs.JwtTokenProvider;
 import com.Aptech.projectservice.Dtos.Request.TaskRequestDto;
 import com.Aptech.projectservice.Dtos.Response.ApiResponse;
 import com.Aptech.projectservice.Dtos.Response.TaskResponseDto;
 import com.Aptech.projectservice.Entitys.Task;
 import com.Aptech.projectservice.Services.Interfaces.TaskService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,18 +34,28 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskController {
 
     TaskService taskService;
+    JwtTokenProvider jwt;
 
-    @PostMapping("/{storyId}/story")
+    @PreAuthorize("hasAuthority('TASK_CREATE')")
+    @PostMapping()
     public ApiResponse<String> createTask(
-            @PathVariable("storyId") Integer storyId,
-            @RequestBody TaskRequestDto request) {
-        taskService.createTask(storyId, request);
+            @RequestBody TaskRequestDto request, HttpServletRequest http) {
+        String token = http.getHeader("Authorization").substring(7);
+        String userId = null;
+        try {
+            userId = jwt.getUserIdFromToken(token);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        taskService.createTask(request, userId);
         return ApiResponse.<String>builder()
                 .status("SUCCESS")
                 .data("Task created successfully")
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('TASK_VIEW')")
     @GetMapping("/{id}")
     public ApiResponse<TaskResponseDto> getTaskById(@PathVariable("id") Integer id) {
         TaskResponseDto task = taskService.getTaskById(id);
@@ -52,17 +65,27 @@ public class TaskController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('TASK_UPDATE')")
     @PutMapping("/{id}")
     public ApiResponse<String> updateTask(
             @PathVariable("id") Integer id,
-            @RequestBody TaskRequestDto request) {
-        taskService.updateTask(id, request);
+            @RequestBody TaskRequestDto request, HttpServletRequest http) {
+        String token = http.getHeader("Authorization").substring(7);
+        String userId = null;
+        try {
+            userId = jwt.getUserIdFromToken(token);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        taskService.updateTask(id, request, userId);
         return ApiResponse.<String>builder()
                 .status("SUCCESS")
                 .data("Task updated successfully")
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('TASK_DELETE')")
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteTask(@PathVariable("id") Integer id) {
         taskService.deleteTask(id);
@@ -72,6 +95,7 @@ public class TaskController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('TASK_VIEW')")
     @GetMapping("/{storyId}/story")
     public ApiResponse<List<TaskResponseDto>> getTasksByStory(@PathVariable("storyId") Integer storyId) {
         List<TaskResponseDto> tasks = taskService.getTasksByStory(storyId);
@@ -81,6 +105,7 @@ public class TaskController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('TASK_VIEW')")
     @GetMapping("/search")
     public ApiResponse<List<Task>> getTasksByAssignedToAndProjectId(
             @RequestParam(required = false) String assignedTo,

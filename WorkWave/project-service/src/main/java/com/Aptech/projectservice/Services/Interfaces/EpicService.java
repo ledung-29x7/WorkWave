@@ -10,9 +10,9 @@ public interface EpicService {
 
     public EpicResponse getEpicById(Integer id);
 
-    public void createEpic(String projectId, EpicCreationRequest dto);
+    public void createEpic(String projectId, EpicCreationRequest dto, String createdBy);
 
-    public void updateEpic(Integer id, EpicCreationRequest dto);
+    public void updateEpic(Integer id, EpicCreationRequest dto, String updatedBy);
 
     public void deleteEpic(Integer id);
 }

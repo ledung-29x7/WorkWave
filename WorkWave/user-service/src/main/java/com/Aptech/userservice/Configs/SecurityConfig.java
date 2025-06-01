@@ -1,94 +1,59 @@
 package com.Aptech.userservice.Configs;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.time.Duration;
+
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import org.springframework.core.io.Resource;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity
+@EnableCaching
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENPOINTS = { "/auth/login", "/auth/verifytoken", "/user/createuser" };
+    private final JwtAuthenticationFilter jwtFilter;
 
-    @Value("${jwt.private-key}")
-    private Resource privateKeyResource;
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        // ✅ Các API công khai không cần token
+                        .requestMatchers(
+                                "/auth/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**")
+                        .permitAll()
 
-    @Value("${jwt.public-key}")
-    private Resource publicKeyResource;
+                        // ✅ API yêu cầu quyền cụ thể
+                        .requestMatchers(HttpMethod.DELETE, "/projects/**").hasRole("ADMIN")
 
-    @SuppressWarnings({ "deprecation", "removal" })
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity.authorizeRequests(
-//                request -> request.requestMatchers(PUBLIC_ENPOINTS).permitAll()
-//                        // .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-//                        .anyRequest().authenticated());
-//
-//        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-//                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-//                .authenticationEntryPoint(new JwtAuthenticationEntrypoint()));
-//        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-//        return httpSecurity.build();
-//    }
+                        // ✅ Các API còn lại chỉ cần login
+                        .anyRequest().authenticated())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-//    @Bean
-//    JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter jwtGrantedConverter = new JwtGrantedAuthoritiesConverter();
-//        jwtGrantedConverter.setAuthorityPrefix("ROLE_");
-//        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-//        jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedConverter);
-//        return jwtConverter;
-//    }
+                .build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public JwtDecoder jwtDecoder() {
-//        return NimbusJwtDecoder.withPublicKey(getPublicKey()).build();
-//    }
-//
-//    @Bean
-//    public JwtEncoder jwtEncoder() {
-//        RSAKey rsaKey = new RSAKey.Builder(getPublicKey()).privateKey(getPrivateKey()).build();
-//        return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(rsaKey)));
-//    }
-//
-//    private RSAPublicKey getPublicKey() {
-//        try {
-//            byte[] keyBytes = readKey(publicKeyResource);
-//            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-//            KeyFactory kf = KeyFactory.getInstance("RSA");
-//            return (RSAPublicKey) kf.generatePublic(spec);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Lỗi khi tải Public Key", e);
-//        }
-//    }
-//
-//    private RSAPrivateKey getPrivateKey() {
-//        try {
-//            byte[] keyBytes = readKey(privateKeyResource);
-//            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-//            KeyFactory kf = KeyFactory.getInstance("RSA");
-//            return (RSAPrivateKey) kf.generatePrivate(spec);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Lỗi khi tải Private Key", e);
-//        }
-//    }
-//
-//    private byte[] readKey(Resource resource) throws IOException {
-//        return Base64.getDecoder().decode(new String(Files.readAllBytes(Paths.get(resource.getURI())))
-//                .replace("-----BEGIN PUBLIC KEY-----", "")
-//                .replace("-----END PUBLIC KEY-----", "")
-//                .replace("-----BEGIN PRIVATE KEY-----", "")
-//                .replace("-----END PRIVATE KEY-----", "")
-//                .replaceAll("\\s", ""));
-//    }
 }

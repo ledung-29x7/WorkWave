@@ -30,27 +30,26 @@ public class UserStoryImplement implements UserStoryService {
     KafkaProducerService kafkaProducerService;
 
     @Transactional
-    public void createUserStory(Integer epicId, UserStoryRequestDto request) {
+    public void createUserStory(UserStoryRequestDto request, String createdBy) {
         userStoryRepository.createUserStory(
-                epicId,
+                request.getEpicId(),
                 request.getSprintId(),
                 request.getName(),
                 request.getDescription(),
                 request.getPriorityId(),
                 request.getStatusId(),
-                request.getCreatedBy(),
-                request.getUpdatedBy());
+                createdBy);
 
-        Integer storyId = userStoryRepository.getLatestCreatedStoryId(request.getCreatedBy());
+        Integer storyId = userStoryRepository.getLatestCreatedStoryId(createdBy);
 
         UserStoryCreatedEvent event = new UserStoryCreatedEvent(
                 storyId,
                 request.getName(),
                 request.getDescription(),
-                epicId,
+                request.getEpicId(),
                 request.getPriorityId(),
                 request.getStatusId(),
-                request.getCreatedBy());
+                createdBy);
 
         kafkaProducerService.send("userstory-events", event);
     }
@@ -61,7 +60,7 @@ public class UserStoryImplement implements UserStoryService {
     }
 
     @Transactional
-    public void updateUserStory(Integer id, UserStoryRequestDto request) {
+    public void updateUserStory(Integer id, UserStoryRequestDto request, String updatedBy) {
         userStoryRepository.updateUserStory(
                 id,
                 request.getEpicId(),
@@ -70,7 +69,7 @@ public class UserStoryImplement implements UserStoryService {
                 request.getDescription(),
                 request.getPriorityId(),
                 request.getStatusId(),
-                request.getUpdatedBy());
+                updatedBy);
 
         UserStoryUpdatedEvent event = new UserStoryUpdatedEvent(
                 id,

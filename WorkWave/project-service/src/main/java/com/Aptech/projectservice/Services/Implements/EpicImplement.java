@@ -42,7 +42,7 @@ public class EpicImplement implements EpicService {
     }
 
     @Transactional
-    public void createEpic(String projectId, EpicCreationRequest dto) {
+    public void createEpic(String projectId, EpicCreationRequest dto, String createdBy) {
         if (projectRepository.existProjectById(projectId) == 1) {
             epicRepository.createEpic(
                     projectId,
@@ -51,14 +51,14 @@ public class EpicImplement implements EpicService {
                     dto.getStatusId(),
                     dto.getStartDate(),
                     dto.getEndDate(),
-                    dto.getCreatedBy());
+                    createdBy);
         } else {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
     }
 
     @Transactional
-    public void updateEpic(Integer id, EpicCreationRequest dto) {
+    public void updateEpic(Integer id, EpicCreationRequest dto, String updatedBy) {
         epicRepository.updateEpic(
                 id,
                 dto.getName(),
@@ -66,7 +66,7 @@ public class EpicImplement implements EpicService {
                 dto.getStatusId(),
                 dto.getStartDate(),
                 dto.getEndDate(),
-                dto.getCreatedBy());
+                updatedBy);
     }
 
     @Transactional

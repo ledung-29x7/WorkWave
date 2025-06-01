@@ -24,7 +24,10 @@ public class ProjectLookupServiceImplement implements ProjectLookupService {
                 event.getProjectId(),
                 event.getName(),
                 event.getDescription(),
-                event.getCreatedBy());
+                event.getCreatedBy(),
+                event.getStartDate(),
+                event.getEndDate(),
+                event.getStatusId());
     }
 
     @Override
@@ -37,7 +40,11 @@ public class ProjectLookupServiceImplement implements ProjectLookupService {
         projectLookupRepository.updateProjectLookup(
                 event.getProjectId(),
                 event.getName(),
-                event.getDescription());
+                event.getDescription(),
+                event.getStartDate(),
+                event.getEndDate(),
+                event.getStatusId(),
+                event.getUpdatedBy());
     }
 
 }

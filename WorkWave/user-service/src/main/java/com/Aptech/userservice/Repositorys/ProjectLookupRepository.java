@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.Aptech.userservice.Entitys.ProjectLookup;
+import com.Aptech.userservice.Entitys.Project;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface ProjectLookupRepository extends JpaRepository<ProjectLookup, String> {
+public interface ProjectLookupRepository extends JpaRepository<Project, String> {
         @Modifying
         @Transactional
         @Query(value = "CALL saveProjectLookup(:projectId, :name, :description, :createdBy)", nativeQuery = true)

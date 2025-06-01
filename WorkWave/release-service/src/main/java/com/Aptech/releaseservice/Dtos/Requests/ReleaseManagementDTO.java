@@ -3,7 +3,6 @@ package com.Aptech.releaseservice.Dtos.Requests;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +24,4 @@ public class ReleaseManagementDTO {
     Integer statusId;
     Timestamp createdAt;
     Timestamp updatedAt;
-    String createdBy;
-    String updatedBy;
 }

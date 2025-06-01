@@ -7,7 +7,11 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.Aptech.releaseservice.Services.ProjectLookupService;
 import com.Aptech.releaseservice.Services.Interfaces.UserLookupService;
+import com.aptech.common.event.project.ProjectCreatedEvent;
+import com.aptech.common.event.project.ProjectDeletedEvent;
+import com.aptech.common.event.project.ProjectUpdatedEvent;
 import com.aptech.common.event.user.UserCreatedEvent;
 import com.aptech.common.event.user.UserDeletedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +26,7 @@ public class UserEventListener {
 
     private final ObjectMapper objectMapper;
     private final UserLookupService userLookupService;
+    private final ProjectLookupService projectLookupService;
 
     @KafkaListener(topics = "user-events", groupId = "${spring.application.name}")
     public void handle(Map<String, Object> payload,
@@ -38,6 +43,18 @@ public class UserEventListener {
                 case "UserDeletedEvent" -> {
                     UserDeletedEvent event = objectMapper.convertValue(payload, UserDeletedEvent.class);
                     userLookupService.delete(event.getUserId());
+                }
+                case "ProjectCreatedEvent" -> {
+                    ProjectCreatedEvent event = objectMapper.convertValue(payload, ProjectCreatedEvent.class);
+                    projectLookupService.save(event);
+                }
+                case "ProjectDeletedEvent" -> {
+                    ProjectDeletedEvent event = objectMapper.convertValue(payload, ProjectDeletedEvent.class);
+                    projectLookupService.deleteProjectLookup(event.getProjectId());
+                }
+                case "ProjectUpdatedEvent" -> {
+                    ProjectUpdatedEvent event = objectMapper.convertValue(payload, ProjectUpdatedEvent.class);
+                    projectLookupService.update(event);
                 }
                 default -> log.warn("⚠️ Unknown eventType: {}", eventType);
             }

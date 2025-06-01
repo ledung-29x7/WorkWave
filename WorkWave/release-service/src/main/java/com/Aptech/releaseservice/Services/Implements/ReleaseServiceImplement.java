@@ -24,14 +24,14 @@ public class ReleaseServiceImplement implements ReleaseService {
     ReleaseManagementMapper releaseManagementMapper;
 
     // Tạo Release mới
-    public void createRelease(ReleaseManagementDTO releaseManagementDTO) {
+    public void createRelease(ReleaseManagementDTO releaseManagementDTO, String createdBy) {
         releaseRepository.createRelease(
                 releaseManagementDTO.getProjectId(),
                 releaseManagementDTO.getVersion(),
                 releaseManagementDTO.getDescription(),
                 releaseManagementDTO.getReleaseDate(),
                 releaseManagementDTO.getStatusId(),
-                releaseManagementDTO.getCreatedBy());
+                createdBy);
     }
 
     // Lấy Release theo ID
@@ -40,14 +40,14 @@ public class ReleaseServiceImplement implements ReleaseService {
     }
 
     // Cập nhật Release
-    public void updateRelease(Integer releaseId, ReleaseManagementDTO releaseManagementDTO) {
+    public void updateRelease(Integer releaseId, ReleaseManagementDTO releaseManagementDTO, String updatedBy) {
         releaseRepository.updateRelease(
                 releaseId,
                 releaseManagementDTO.getVersion(),
                 releaseManagementDTO.getDescription(),
                 releaseManagementDTO.getReleaseDate(),
                 releaseManagementDTO.getStatusId(),
-                releaseManagementDTO.getUpdatedBy());
+                updatedBy);
     }
 
     // Xóa Release

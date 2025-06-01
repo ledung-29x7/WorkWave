@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
         @Modifying
         @Transactional
-        @Query(value = "CALL CreateUserStory(:epicId, :sprintId, :name, :description, :priorityId, :statusId, :createdBy,:updatedBy)", nativeQuery = true)
+        @Query(value = "CALL CreateUserStory(:epicId, :sprintId, :name, :description, :priorityId, :statusId, :createdBy)", nativeQuery = true)
         void createUserStory(
                         @Param("epicId") Integer epicId,
                         @Param("sprintId") Integer sprintId,
@@ -24,8 +24,7 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
                         @Param("description") String description,
                         @Param("priorityId") Integer priorityId,
                         @Param("statusId") Integer statusId,
-                        @Param("createdBy") String createdBy,
-                        @Param("updatedBy") String updatedBy);
+                        @Param("createdBy") String createdBy);
 
         @Query(value = "CALL GetUserStoryById(:storyId)", nativeQuery = true)
         UserStory getUserStoryById(@Param("storyId") Integer storyId);
