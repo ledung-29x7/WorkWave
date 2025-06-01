@@ -23,6 +23,5 @@ public class TestCaseDTO {
     String expectedResult;
     String actualResult;
     Integer statusId;
-    String createdBy;
     String executedBy;
 }

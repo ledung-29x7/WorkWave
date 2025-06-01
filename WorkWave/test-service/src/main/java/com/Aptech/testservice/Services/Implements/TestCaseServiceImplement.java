@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.Aptech.testservice.Dtos.Requests.TestCaseDTO;
+import com.Aptech.testservice.Dtos.Responses.TestCaseResponse;
 import com.Aptech.testservice.Mappers.TestCaseMapper;
 import com.Aptech.testservice.Repositorys.TestCaseRepository;
 import com.Aptech.testservice.Services.Interfaces.TestCaseService;
@@ -22,7 +23,7 @@ public class TestCaseServiceImplement implements TestCaseService {
     TestCaseMapper mapper;
 
     @Override
-    public void createTestCase(TestCaseDTO dto) {
+    public void createTestCase(TestCaseDTO dto, String createdBy) {
         repository.createTestCase(
                 dto.getProjectId(),
                 dto.getStoryId(),
@@ -31,13 +32,13 @@ public class TestCaseServiceImplement implements TestCaseService {
                 dto.getExpectedResult(),
                 dto.getActualResult(),
                 dto.getStatusId(),
-                dto.getCreatedBy(),
+                createdBy,
                 dto.getExecutedBy());
     }
 
     @Override
-    public TestCaseDTO getTestCaseById(Integer id) {
-        return mapper.toDTO(repository.getTestCaseById(id));
+    public TestCaseResponse getTestCaseById(Integer id) {
+        return mapper.toDTOrp(repository.getTestCaseById(id));
     }
 
     @Override
@@ -58,10 +59,10 @@ public class TestCaseServiceImplement implements TestCaseService {
     }
 
     @Override
-    public List<TestCaseDTO> getTestCasesByProject(String projectId) {
+    public List<TestCaseResponse> getTestCasesByProject(String projectId) {
         return repository.getTestCasesByProject(projectId)
                 .stream()
-                .map(mapper::toDTO)
+                .map(mapper::toDTOrp)
                 .collect(Collectors.toList());
     }
 }

@@ -7,11 +7,11 @@ import com.Aptech.projectservice.Dtos.Response.TaskResponseDto;
 import com.Aptech.projectservice.Entitys.Task;
 
 public interface TaskService {
-    public void createTask(Integer storyId, TaskRequestDto request);
+    public void createTask(TaskRequestDto request, String createdBy);
 
     public TaskResponseDto getTaskById(Integer id);
 
-    public void updateTask(Integer id, TaskRequestDto request);
+    public void updateTask(Integer id, TaskRequestDto request, String updatedBy);
 
     public void deleteTask(Integer id);
 

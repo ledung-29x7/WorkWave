@@ -41,7 +41,7 @@ public class SprintImplement implements SprintService {
     }
 
     @Transactional
-    public void createSprint(String projectId, SprintRequestDto dto) {
+    public void createSprint(String projectId, SprintRequestDto dto, String createdBy) {
         if (projectRepository.existProjectById(projectId) == 1) {
 
             sprintRepository.createSprint(
@@ -51,14 +51,14 @@ public class SprintImplement implements SprintService {
                     dto.getEndDate(),
                     dto.getStatusId(),
                     dto.getGoal(),
-                    dto.getCreatedBy());
+                    createdBy);
         } else {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
     }
 
     @Transactional
-    public void updateSprint(Integer id, SprintRequestDto dto) {
+    public void updateSprint(Integer id, SprintRequestDto dto, String updatedBy) {
         sprintRepository.updateSprint(
                 id,
                 dto.getName(),
@@ -66,7 +66,7 @@ public class SprintImplement implements SprintService {
                 dto.getEndDate(),
                 dto.getStatusId(),
                 dto.getGoal(),
-                dto.getUpdatedBy());
+                updatedBy);
     }
 
     @Transactional

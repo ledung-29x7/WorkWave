@@ -23,5 +23,4 @@ public class CreateBugRequest {
     Integer severityId;
     Integer priorityId;
     Integer statusId;
-    String createdBy;
 }

@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Aptech.releaseservice.Configs.JwtTokenProvider;
 import com.Aptech.releaseservice.Dtos.Requests.ReleaseManagementDTO;
 import com.Aptech.releaseservice.Dtos.Responses.ApiResponse;
 import com.Aptech.releaseservice.Dtos.Responses.ReleaseResponseDTO;
 import com.Aptech.releaseservice.Services.Interfaces.ReleaseService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,10 +30,20 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 public class ReleaseController {
     ReleaseService releaseService;
+    JwtTokenProvider jwt;
 
     @PostMapping
-    public ApiResponse<String> createRelease(@RequestBody ReleaseManagementDTO releaseManagementDTO) {
-        releaseService.createRelease(releaseManagementDTO);
+    public ApiResponse<String> createRelease(@RequestBody ReleaseManagementDTO releaseManagementDTO,
+            HttpServletRequest http) {
+        String token = http.getHeader("Authorization").substring(7);
+        String userId = null;
+        try {
+            userId = jwt.getUserIdFromToken(token);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        releaseService.createRelease(releaseManagementDTO, userId);
         return ApiResponse.<String>builder()
                 .status("SUCCESS")
                 .data("Release created successfully")
@@ -50,8 +62,16 @@ public class ReleaseController {
     @PutMapping("/{id}")
     public ApiResponse<String> updateRelease(
             @PathVariable("id") Integer releaseId,
-            @RequestBody ReleaseManagementDTO releaseManagementDTO) {
-        releaseService.updateRelease(releaseId, releaseManagementDTO);
+            @RequestBody ReleaseManagementDTO releaseManagementDTO, HttpServletRequest http) {
+        String token = http.getHeader("Authorization").substring(7);
+        String userId = null;
+        try {
+            userId = jwt.getUserIdFromToken(token);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        releaseService.updateRelease(releaseId, releaseManagementDTO, userId);
         return ApiResponse.<String>builder()
                 .status("SUCCESS")
                 .data("Release updated successfully")

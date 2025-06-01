@@ -9,7 +9,7 @@ import com.Aptech.bugtrackingservice.Dtos.Responses.BugDTO;
 import com.Aptech.bugtrackingservice.Dtos.Responses.BugDetailsDTO;
 
 public interface BugService {
-    void createBug(CreateBugRequest request);
+    void createBug(CreateBugRequest request, String createdBy);
 
     BugDTO getBugById(Integer id);
 

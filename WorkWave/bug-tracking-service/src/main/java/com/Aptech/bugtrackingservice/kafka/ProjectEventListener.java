@@ -1,6 +1,6 @@
 package com.Aptech.bugtrackingservice.kafka;
 
-import com.Aptech.bugtrackingservice.Services.ProjectLookupService;
+import com.Aptech.bugtrackingservice.Services.Interfaces.ProjectLookupService;
 import com.aptech.common.event.project.ProjectCreatedEvent;
 import com.aptech.common.event.project.ProjectDeletedEvent;
 import com.aptech.common.event.project.ProjectUpdatedEvent;

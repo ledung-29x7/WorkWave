@@ -10,9 +10,9 @@ public interface SprintService {
 
     public SprintResponseDto getSprintById(Integer id);
 
-    public void createSprint(String projectId, SprintRequestDto dto);
+    public void createSprint(String projectId, SprintRequestDto dto, String createdBy);
 
-    public void updateSprint(Integer id, SprintRequestDto dto);
+    public void updateSprint(Integer id, SprintRequestDto dto, String updatedBy);
 
     public void deleteSprint(Integer id);
 }

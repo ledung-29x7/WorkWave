@@ -1,5 +1,6 @@
 package com.Aptech.testservice.Entitys;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -18,4 +19,9 @@ public class ProjectLookup {
     private String description;
     private String createdBy;
     private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private Integer statusId;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
 }

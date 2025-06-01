@@ -6,11 +6,11 @@ import com.Aptech.releaseservice.Dtos.Requests.ReleaseManagementDTO;
 import com.Aptech.releaseservice.Dtos.Responses.ReleaseResponseDTO;
 
 public interface ReleaseService {
-    public void createRelease(ReleaseManagementDTO releaseManagementDTO);
+    public void createRelease(ReleaseManagementDTO releaseManagementDTO, String createdBy);
 
     public ReleaseResponseDTO getReleaseById(Integer releaseId);
 
-    public void updateRelease(Integer releaseId, ReleaseManagementDTO releaseManagementDTO);
+    public void updateRelease(Integer releaseId, ReleaseManagementDTO releaseManagementDTO, String updatedBy);
 
     public void deleteRelease(Integer releaseId);
 

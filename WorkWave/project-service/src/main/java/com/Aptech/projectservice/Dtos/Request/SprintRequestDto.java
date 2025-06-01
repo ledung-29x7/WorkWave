@@ -20,6 +20,4 @@ public class SprintRequestDto {
     Date endDate;
     Integer statusId;
     String goal;
-    String createdBy;
-    String updatedBy;
 }

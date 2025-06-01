@@ -30,19 +30,19 @@ public class TaskImplement implements TaskService {
     KafkaProducerService kafkaProducerService;
 
     @Transactional
-    public void createTask(Integer storyId, TaskRequestDto request) {
+    public void createTask(TaskRequestDto request, String createdBy) {
         taskRepository.createTask(
-                storyId,
+                request.getStoryId(),
                 request.getAssignedTo(),
                 request.getName(),
                 request.getDescription(),
                 request.getStatusId(),
                 request.getEstimatedHours(),
-                request.getCreatedBy());
-        Integer taskId = taskRepository.getLatestCreatedTaskId(storyId, request.getCreatedBy());
+                createdBy);
+        Integer taskId = taskRepository.getLatestCreatedTaskId(request.getStoryId(), createdBy);
         TaskCreatedEvent event = new TaskCreatedEvent(
                 taskId,
-                storyId,
+                request.getStoryId(),
                 request.getName(),
                 request.getDescription(),
                 request.getStatusId(),
@@ -50,7 +50,7 @@ public class TaskImplement implements TaskService {
                 request.getLoggedHours(),
                 request.getRemainingHours(),
                 request.getAssignedTo(),
-                request.getCreatedBy());
+                createdBy);
 
         kafkaProducerService.send("task-events", event);
 
@@ -62,7 +62,7 @@ public class TaskImplement implements TaskService {
     }
 
     @Transactional
-    public void updateTask(Integer id, TaskRequestDto request) {
+    public void updateTask(Integer id, TaskRequestDto request, String updatedBy) {
         taskRepository.updateTask(
                 id,
                 request.getAssignedTo(),
@@ -72,7 +72,7 @@ public class TaskImplement implements TaskService {
                 request.getEstimatedHours(),
                 request.getLoggedHours(),
                 request.getRemainingHours(),
-                request.getUpdatedBy());
+                updatedBy);
         TaskUpdatedEvent event = new TaskUpdatedEvent(
                 id,
                 request.getName(),
@@ -82,7 +82,7 @@ public class TaskImplement implements TaskService {
                 request.getLoggedHours(),
                 request.getRemainingHours(),
                 request.getAssignedTo(),
-                request.getUpdatedBy());
+                updatedBy);
 
         kafkaProducerService.send("task-events", event);
     }

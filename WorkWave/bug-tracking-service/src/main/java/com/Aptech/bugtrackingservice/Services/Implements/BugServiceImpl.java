@@ -29,7 +29,7 @@ public class BugServiceImpl implements BugService {
     private final BugDetailsMapper bugDetailsMapper;
 
     @Override
-    public void createBug(CreateBugRequest request) {
+    public void createBug(CreateBugRequest request, String createdBy) {
         bugRepository.createBug(
                 request.getProjectId(),
                 request.getStoryId(),
@@ -41,7 +41,7 @@ public class BugServiceImpl implements BugService {
                 request.getSeverityId(),
                 request.getPriorityId(),
                 request.getStatusId(),
-                request.getCreatedBy());
+                createdBy);
     }
 
     @Override

@@ -20,5 +20,4 @@ public class EpicCreationRequest {
     LocalDate startDate;
     LocalDate endDate;
     Integer statusId;
-    String createdBy;
 }
