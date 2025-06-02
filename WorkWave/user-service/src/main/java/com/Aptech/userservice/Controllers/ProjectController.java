@@ -60,7 +60,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAllByUser(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7); // bỏ "Bearer "
+        String token = request.getHeader("Authorization").substring(7);
         String userId = null;
         try {
             userId = jwt.getUserIdFromToken(token);
