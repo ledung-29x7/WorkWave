@@ -16,6 +16,7 @@ import com.Aptech.userservice.Services.Interfaces.IUserService;
 import com.Aptech.userservice.event.KafkaProducerService;
 import com.aptech.common.event.user.UserCreatedEvent;
 import com.aptech.common.event.user.UserDeletedEvent;
+import com.aptech.common.event.user.UserUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +65,11 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void updateUser(String userId, UserUpdateRequest request) {
         userRepository.updateUserByProcedure(userId, request.getUserName(), request.getEmail());
+        UserUpdatedEvent event = new UserUpdatedEvent(
+                userId,
+                request.getEmail(),
+                request.getUserName());
+        kafkaProducerService.send("user-events", event);
     }
 
     @Override

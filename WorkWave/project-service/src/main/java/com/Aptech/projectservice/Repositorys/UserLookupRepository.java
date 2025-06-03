@@ -25,4 +25,10 @@ public interface UserLookupRepository extends JpaRepository<UserLookup, String> 
     @Query(value = "CALL deleteUserLookup(:userId)", nativeQuery = true)
     void deleteUserLookup(@Param("userId") String userId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "CALL sp_update_user(:userId, :userName, :email)", nativeQuery = true)
+    void updateUserByProcedure(@Param("userId") String userId,
+            @Param("userName") String userName,
+            @Param("email") String email);
 }

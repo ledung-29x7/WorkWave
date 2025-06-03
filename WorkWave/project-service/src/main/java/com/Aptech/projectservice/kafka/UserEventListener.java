@@ -14,6 +14,7 @@ import com.aptech.common.event.project.ProjectDeletedEvent;
 import com.aptech.common.event.project.ProjectUpdatedEvent;
 import com.aptech.common.event.user.UserCreatedEvent;
 import com.aptech.common.event.user.UserDeletedEvent;
+import com.aptech.common.event.user.UserUpdatedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,10 @@ public class UserEventListener {
                 case "UserCreatedEvent" -> {
                     UserCreatedEvent event = objectMapper.convertValue(payload, UserCreatedEvent.class);
                     userLookupService.save(event);
+                }
+                case "UserUpdatedEvent" -> {
+                    UserUpdatedEvent event = objectMapper.convertValue(payload, UserUpdatedEvent.class);
+                    userLookupService.update(event);
                 }
                 case "UserDeletedEvent" -> {
                     UserDeletedEvent event = objectMapper.convertValue(payload, UserDeletedEvent.class);

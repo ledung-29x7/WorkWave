@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.Aptech.bugtrackingservice.Repositorys.UserLookupRepository;
 import com.Aptech.bugtrackingservice.Services.Interfaces.UserLookupService;
 import com.aptech.common.event.user.UserCreatedEvent;
+import com.aptech.common.event.user.UserUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,5 +25,10 @@ public class UserLookupServiceImplement implements UserLookupService {
     public void delete(String userId) {
         userLookupRepository.deleteUserLookup(userId);
 
+    }
+
+    @Override
+    public void update(UserUpdatedEvent event) {
+        userLookupRepository.updateUserByProcedure(event.getUserId(), event.getUserName(), event.getEmail());
     }
 }
