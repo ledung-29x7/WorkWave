@@ -12,27 +12,30 @@ import jakarta.transaction.Transactional;
 public interface UserStoryLookupRepository extends JpaRepository<UserStoryLookup, Integer> {
         @Modifying
         @Transactional
-        @Query(value = "CALL saveUserStoryLookup(:storyId, :name, :description, :epicId, :priorityId, :statusId, :createdBy)", nativeQuery = true)
+        @Query(value = "CALL saveUserStoryLookup(:storyId, :name, :description, :epicId, :priorityId, :assignedTo, :statusId, :createdBy, :projectId)", nativeQuery = true)
         void saveUserStoryLookup(
                         @Param("storyId") Integer storyId,
                         @Param("name") String name,
                         @Param("description") String description,
                         @Param("epicId") Integer epicId,
                         @Param("priorityId") Integer priorityId,
+                        @Param("assignedTo") String assignedTo,
                         @Param("statusId") Integer statusId,
-                        @Param("createdBy") String createdBy);
+                        @Param("createdBy") String createdBy,
+                        @Param("projectId") String projectId);
 
         @Query(value = "CALL ExistsByUserStoryLookupId(:storyId)", nativeQuery = true)
         int ExistsByUserStoryLookupId(@Param("storyId") Integer storyId);
 
         @Modifying
         @Transactional
-        @Query(value = "CALL updateUserStoryLookup(:storyId, :name, :description, :epicId, :priorityId, :statusId)", nativeQuery = true)
+        @Query(value = "CALL updateUserStoryLookup(:storyId, :name, :description, :epicId, :priorityId, :assignedTo, :statusId)", nativeQuery = true)
         void updateUserStoryLookup(@Param("storyId") Integer storyId,
                         @Param("name") String name,
                         @Param("description") String description,
                         @Param("epicId") Integer epicId,
                         @Param("priorityId") Integer priorityId,
+                        @Param("assignedTo") String assignedTo,
                         @Param("statusId") Integer statusId);
 
         @Modifying

@@ -18,5 +18,6 @@ public class UserStoryRequestDto {
     String name;
     String description;
     Integer priorityId;
+    String assignedTo;
     Integer statusId;
 }

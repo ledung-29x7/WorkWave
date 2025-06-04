@@ -31,6 +31,8 @@ public class UserStory {
     Integer epicId;
     @Column(name = "SprintId")
     Integer sprintId;
+    @Column(name = "AssignedTo")
+    String assignedTo;
     @Column(name = "Name")
     String userStoryName;
     @Column(name = "Description")
@@ -47,4 +49,6 @@ public class UserStory {
     String createdBy;
     @Column(name = "UpdatedBy")
     String updatedBy;
+    @Column(name = "ProjectId")
+    String projectId;
 }

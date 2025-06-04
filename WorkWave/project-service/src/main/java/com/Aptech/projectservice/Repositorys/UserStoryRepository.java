@@ -16,22 +16,24 @@ import jakarta.transaction.Transactional;
 public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
         @Modifying
         @Transactional
-        @Query(value = "CALL CreateUserStory(:epicId, :sprintId, :name, :description, :priorityId, :statusId, :createdBy)", nativeQuery = true)
+        @Query(value = "CALL CreateUserStory(:epicId, :sprintId, :name, :description, :priorityId, :assignedTo, :statusId, :createdBy, :projectId)", nativeQuery = true)
         void createUserStory(
                         @Param("epicId") Integer epicId,
                         @Param("sprintId") Integer sprintId,
                         @Param("name") String name,
                         @Param("description") String description,
                         @Param("priorityId") Integer priorityId,
+                        @Param("assignedTo") String assignedTo,
                         @Param("statusId") Integer statusId,
-                        @Param("createdBy") String createdBy);
+                        @Param("createdBy") String createdBy,
+                        @Param("projectId") String projectId);
 
         @Query(value = "CALL GetUserStoryById(:storyId)", nativeQuery = true)
         UserStory getUserStoryById(@Param("storyId") Integer storyId);
 
         @Modifying
         @Transactional
-        @Query(value = "CALL UpdateUserStory(:storyId, :epicId, :sprintId, :name, :description, :priorityId, :statusId, :updatedBy)", nativeQuery = true)
+        @Query(value = "CALL UpdateUserStory(:storyId, :epicId, :sprintId, :name, :description, :priorityId, :assignedTo, :statusId, :updatedBy)", nativeQuery = true)
         void updateUserStory(
                         @Param("storyId") Integer storyId,
                         @Param("epicId") Integer epicId,
@@ -39,6 +41,7 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
                         @Param("name") String name,
                         @Param("description") String description,
                         @Param("priorityId") Integer priorityId,
+                        @Param("assignedTo") String assignedTo,
                         @Param("statusId") Integer statusId,
                         @Param("updatedBy") String updatedBy);
 
@@ -52,4 +55,11 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
 
         @Query(value = "CALL getLatestCreatedStoryId(:createdBy)", nativeQuery = true)
         Integer getLatestCreatedStoryId(@Param("createdBy") String createdBy);
+
+        @Query(value = "CALL GetUserStoriesByUserId(:assignedTo)", nativeQuery = true)
+        List<UserStory> getUserStoriesByUserId(@Param("assignedTo") String assignedTo);
+
+        @Query(value = "CALL GetUserStoriesByProjectId(:projectId)", nativeQuery = true)
+        List<UserStory> getUserStoriesByProjectId(@Param("projectId") String projectId);
+
 }

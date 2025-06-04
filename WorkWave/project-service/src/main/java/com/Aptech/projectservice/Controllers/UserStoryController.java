@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Aptech.projectservice.Configs.JwtTokenProvider;
+import com.Aptech.projectservice.Configs.ProjectContext;
 import com.Aptech.projectservice.Dtos.Request.UserStoryRequestDto;
 import com.Aptech.projectservice.Dtos.Response.ApiResponse;
 import com.Aptech.projectservice.Dtos.Response.UserStoryResponseDto;
@@ -32,6 +33,7 @@ public class UserStoryController {
     @PostMapping()
     public ApiResponse<String> createUserStory(
             @RequestBody UserStoryRequestDto request, HttpServletRequest http) {
+        String projectId = ProjectContext.getProjectId();
         String token = http.getHeader("Authorization").substring(7);
         String userId = null;
         try {
@@ -40,7 +42,7 @@ public class UserStoryController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        userStoryService.createUserStory(request, userId);
+        userStoryService.createUserStory(request, userId, projectId);
         return ApiResponse.<String>builder()
                 .status("SUCCESS")
                 .data("User Story created successfully")
@@ -96,4 +98,34 @@ public class UserStoryController {
                 .data(stories)
                 .build();
     }
+
+    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @GetMapping("/assigned")
+    public ApiResponse<List<UserStoryResponseDto>> getUserStoriesByUser(HttpServletRequest http) {
+        String token = http.getHeader("Authorization").substring(7);
+        String userId = null;
+        try {
+            userId = jwt.getUserIdFromToken(token);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        List<UserStoryResponseDto> stories = userStoryService.getUserStoriesByUser(userId);
+        return ApiResponse.<List<UserStoryResponseDto>>builder()
+                .status("SUCCESS")
+                .data(stories)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @GetMapping("/project")
+    public ApiResponse<List<UserStoryResponseDto>> getUserStoriesByProject() {
+        String projectId = ProjectContext.getProjectId();
+        List<UserStoryResponseDto> stories = userStoryService.getUserStoriesByProject(projectId);
+        return ApiResponse.<List<UserStoryResponseDto>>builder()
+                .status("SUCCESS")
+                .data(stories)
+                .build();
+    }
+
 }
