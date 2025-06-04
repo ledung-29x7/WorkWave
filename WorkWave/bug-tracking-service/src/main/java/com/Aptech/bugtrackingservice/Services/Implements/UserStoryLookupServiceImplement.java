@@ -25,8 +25,10 @@ public class UserStoryLookupServiceImplement implements UserStoryLookupService {
                 event.getDescription(),
                 event.getEpicId(),
                 event.getPriorityId(),
+                event.getAssignedTo(),
                 event.getStatusId(),
-                event.getCreatedBy());
+                event.getCreatedBy(),
+                event.getProjectId());
     }
 
     @Override
@@ -38,6 +40,7 @@ public class UserStoryLookupServiceImplement implements UserStoryLookupService {
                 event.getDescription(),
                 event.getEpicId(),
                 event.getPriorityId(),
+                event.getAssignedTo(),
                 event.getStatusId());
     }
 

@@ -30,15 +30,16 @@ public class UserStoryImplement implements UserStoryService {
     KafkaProducerService kafkaProducerService;
 
     @Transactional
-    public void createUserStory(UserStoryRequestDto request, String createdBy) {
+    public void createUserStory(UserStoryRequestDto request, String createdBy, String projectId) {
         userStoryRepository.createUserStory(
                 request.getEpicId(),
                 request.getSprintId(),
                 request.getName(),
                 request.getDescription(),
                 request.getPriorityId(),
+                request.getAssignedTo(),
                 request.getStatusId(),
-                createdBy);
+                createdBy, projectId);
 
         Integer storyId = userStoryRepository.getLatestCreatedStoryId(createdBy);
 
@@ -48,8 +49,9 @@ public class UserStoryImplement implements UserStoryService {
                 request.getDescription(),
                 request.getEpicId(),
                 request.getPriorityId(),
+                request.getAssignedTo(),
                 request.getStatusId(),
-                createdBy);
+                createdBy, projectId);
 
         kafkaProducerService.send("userstory-events", event);
     }
@@ -68,6 +70,7 @@ public class UserStoryImplement implements UserStoryService {
                 request.getName(),
                 request.getDescription(),
                 request.getPriorityId(),
+                request.getAssignedTo(),
                 request.getStatusId(),
                 updatedBy);
 
@@ -77,6 +80,7 @@ public class UserStoryImplement implements UserStoryService {
                 request.getDescription(),
                 request.getEpicId(),
                 request.getPriorityId(),
+                request.getAssignedTo(),
                 request.getStatusId());
 
         kafkaProducerService.send("userstory-events", event);
@@ -92,6 +96,18 @@ public class UserStoryImplement implements UserStoryService {
 
     public List<UserStoryResponseDto> getUserStoriesByEpic(Integer epicId) {
         List<UserStory> stories = userStoryRepository.getUserStoriesByEpicId(epicId);
+        return stories.stream().map(userStoryMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserStoryResponseDto> getUserStoriesByUser(String assignedTo) {
+        List<UserStory> stories = userStoryRepository.getUserStoriesByUserId(assignedTo);
+        return stories.stream().map(userStoryMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserStoryResponseDto> getUserStoriesByProject(String projectId) {
+        List<UserStory> stories = userStoryRepository.getUserStoriesByProjectId(projectId);
         return stories.stream().map(userStoryMapper::toDto).collect(Collectors.toList());
     }
 }

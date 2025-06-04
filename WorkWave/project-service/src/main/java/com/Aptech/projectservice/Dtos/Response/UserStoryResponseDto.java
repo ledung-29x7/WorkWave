@@ -21,9 +21,11 @@ public class UserStoryResponseDto {
     String name;
     String description;
     Integer priorityId;
+    String assignedTo;
     Integer statusId;
     Date createdAt;
     Date updatedAt;
     String createdBy;
     String updatedBy;
+    String projectId;
 }
