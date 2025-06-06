@@ -36,4 +36,16 @@ public class CustomUserDetailsService {
         // 3. Trả về CustomUserDetails chứa quyền
         return new CustomUserDetails(user, permissionCodes);
     }
+
+    public UserDetails loadUserGlobalAuthorities(String userId) {
+        Users user = userRepo.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Lấy danh sách quyền toàn cục
+        List<String> permissionCodes = permissionRepository.getGlobalPermissionCodesByUserId(userId);
+        System.out.println("🎯 Permissions returned: " + permissionCodes);
+
+        return new CustomUserDetails(user, permissionCodes);
+    }
+
 }

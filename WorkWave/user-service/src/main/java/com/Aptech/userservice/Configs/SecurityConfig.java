@@ -1,16 +1,9 @@
 package com.Aptech.userservice.Configs;
 
-import java.time.Duration;
-
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableCaching
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -37,18 +31,16 @@ public class SecurityConfig {
                         // ✅ Các API công khai không cần token
                         .requestMatchers(
                                 "/auth/**",
+                                "/users/auth/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**")
                         .permitAll()
-
-                        // ✅ API yêu cầu quyền cụ thể
-                        .requestMatchers(HttpMethod.DELETE, "/projects/**").hasRole("ADMIN")
 
                         // ✅ Các API còn lại chỉ cần login
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-
+                .securityContext(context -> context.requireExplicitSave(false))
                 .build();
     }
 
