@@ -1,10 +1,11 @@
 package com.Aptech.userservice.Configs;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +13,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.Aptech.userservice.Entitys.Users;
 import com.Aptech.userservice.Repositorys.UserRepository;
 import com.Aptech.userservice.Services.Implement.CustomUserDetailsService;
 
@@ -21,9 +21,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -31,6 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
     private final UserRepository userRepository;
+
+    private static final Pattern UUID_PATTERN = Pattern.compile("^/[0-9a-fA-F\\-]{36}$");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -54,50 +53,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             userId = tokenProvider.getUserIdFromToken(token);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         String path = request.getRequestURI();
         String method = request.getMethod();
+        System.out.println("Request path: " + path);
 
-        // ✅ Route KHÔNG yêu cầu projectId
         boolean isProjectIndependent = path.startsWith("/auth") ||
                 path.startsWith("/permissions") ||
                 path.startsWith("/roles") ||
-                (path.equals("/projects") && method.equals("POST")) || // tạo project
-                (path.equals("/projects") && method.equals("GET")); // lấy danh sách project của user
-
-        if (isProjectIndependent) {
-            Users user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-            UserDetails userDetails = new CustomUserDetails(user, List.of());
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                    null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // ✅ Còn lại: yêu cầu X-Project-Id
-        String projectId = request.getHeader("X-Project-Id");
-        if (projectId == null || projectId.isBlank()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Missing X-Project-Id header.");
-            return;
-        }
+                path.startsWith("/customer") ||
+                path.startsWith("/user") ||
+                path.startsWith("/users") || // 👈 cái này sẽ match tất cả /users/*
+                path.contains("/users/user") || // ✅ Bổ sung check cụ thể nếu cần
+                UUID_PATTERN.matcher(path).matches() ||
+                (path.equals("/projects") && method.equals("POST")) ||
+                (path.equals("/projects") && method.equals("GET"));
+        System.out.println("isProjectIndependent = " + isProjectIndependent);
 
         try {
-            UserDetails userDetails = userDetailsService.loadUserByIdAndProject(userId, projectId);
+            UserDetails userDetails;
+
+            if (isProjectIndependent) {
+                userDetails = userDetailsService.loadUserGlobalAuthorities(userId);
+            } else {
+                String projectId = request.getHeader("X-Project-Id");
+                if (projectId == null || projectId.isBlank()) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"status\":\"FAILURE\", \"message\":\"Missing X-Project-Id header\"}");
+                    return;
+                }
+
+                userDetails = userDetailsService.loadUserByIdAndProject(userId, projectId);
+            }
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                     null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // ✅ Set full SecurityContext (sửa chỗ này)
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+
+            System.out.println("✅ Granted Authorities: " + authentication.getAuthorities());
 
         } catch (UsernameNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -111,4 +112,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

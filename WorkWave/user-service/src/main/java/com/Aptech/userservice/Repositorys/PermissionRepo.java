@@ -18,4 +18,11 @@ public class PermissionRepo {
                 .setParameter("projectId", projectId)
                 .getResultList();
     }
+
+    public List<String> getGlobalPermissionCodesByUserId(String userId) {
+        return em.createNativeQuery("CALL sp_get_permission_codes_by_user_global(:userId)")
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
 }

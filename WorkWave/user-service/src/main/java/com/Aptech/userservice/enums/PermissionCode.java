@@ -1,5 +1,7 @@
 package com.Aptech.userservice.enums;
 
+import org.bouncycastle.jcajce.provider.asymmetric.dsa.DSASigner.stdDSA;
+
 public class PermissionCode {
     // Permission Management
     public static final String PERMISSION_CREATE = "PERMISSION_CREATE";
@@ -29,4 +31,5 @@ public class PermissionCode {
     public static final String USER_EDIT = "USER_EDIT";
     public static final String USER_DELETE = "USER_DELETE";
     public static final String USER_SEARCH = "USER_SEARCH";
+    public static final String USER_VIEW_ALL = "USER_VIEW_ALL";
 }

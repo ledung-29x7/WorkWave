@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.Aptech.userservice.Dtos.Request.ProjectMemberRequest;
 import com.Aptech.userservice.Dtos.Response.ProjectMemberResponse;
+import com.Aptech.userservice.Entitys.Users;
+import com.Aptech.userservice.Exceptions.AppException;
+import com.Aptech.userservice.Exceptions.ErrorCode;
 import com.Aptech.userservice.Repositorys.ProjectRoleAssignmentRepository;
+import com.Aptech.userservice.Repositorys.UserRepository;
 import com.Aptech.userservice.Services.Interfaces.IProjectMemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class ProjectMemberServiceImpl implements IProjectMemberService {
 
     private final ProjectRoleAssignmentRepository repository;
+    private final UserRepository userRepository;
 
     @Override
     public List<ProjectMemberResponse> getMembers(String projectId) {
@@ -34,7 +39,9 @@ public class ProjectMemberServiceImpl implements IProjectMemberService {
     @Override
     public void assignUser(String projectId, ProjectMemberRequest request) {
         String id = UUID.randomUUID().toString();
-        repository.assignUser(id, request.getUserId(), projectId, request.getRoleId());
+        Users user = userRepository.FindByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        repository.assignUser(id, user.getUserId(), projectId, request.getRoleId());
     }
 
     @Override

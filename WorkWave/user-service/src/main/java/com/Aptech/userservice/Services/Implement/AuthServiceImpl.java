@@ -1,5 +1,6 @@
 package com.Aptech.userservice.Services.Implement;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,11 +12,14 @@ import com.Aptech.userservice.Configs.RefreshTokenStore;
 import com.Aptech.userservice.Dtos.Request.JwtResponse;
 import com.Aptech.userservice.Dtos.Request.LoginRequest;
 import com.Aptech.userservice.Dtos.Request.RegisterRequest;
+import com.Aptech.userservice.Entitys.UserGlobalRole;
 import com.Aptech.userservice.Entitys.Users;
 import com.Aptech.userservice.Exceptions.AppException;
 import com.Aptech.userservice.Exceptions.ErrorCode;
+import com.Aptech.userservice.Repositorys.UserGlobalRoleRepository;
 import com.Aptech.userservice.Repositorys.UserRepository;
 import com.Aptech.userservice.Services.Interfaces.IAuthService;
+import com.Aptech.userservice.enums.RoleEnum;
 import com.Aptech.userservice.event.KafkaProducerService;
 import com.aptech.common.event.user.UserCreatedEvent;
 
@@ -29,6 +33,7 @@ public class AuthServiceImpl implements IAuthService {
     private final PasswordEncoder encoder;
     private final RefreshTokenStore refreshTokenStore;
     private final KafkaProducerService kafkaProducerService;
+    private final UserGlobalRoleRepository userGlobalRoleRepository;
 
     @Override
     public void register(RegisterRequest req) {
@@ -44,6 +49,9 @@ public class AuthServiceImpl implements IAuthService {
                 .isActive(true)
                 .createdAt(new Date())
                 .build());
+
+        userGlobalRoleRepository.save(
+                new UserGlobalRole(userId, RoleEnum.GENERAL_USER.getRoleId(), LocalDateTime.now()));
 
         UserCreatedEvent event = new UserCreatedEvent(
                 userId,

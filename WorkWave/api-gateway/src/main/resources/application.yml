@@ -11,31 +11,31 @@ spring:
           predicates:
             - Path=/users/**
           filters:
-            - RewritePath=/users/(?<segment>.*), /$\{segment}
+            - RewritePath=/users/(?<segment>.*), /${segment}
         - id: project-service
           uri: lb://project-service
           predicates:
             - Path=/projects/**
           filters:
-            - RewritePath=/projects/(?<segment>.*), /$\{segment}
+            - RewritePath=/projects/(?<segment>.*), /${segment}
         - id: test-service
           uri: lb://test-service
           predicates:
             - Path=/tests/**
           filters:
-            - RewritePath=/tests/(?<segment>.*), /$\{segment}
+            - RewritePath=/tests/(?<segment>.*), /${segment}
         - id: bug-tracking-service
           uri: lb://bug-tracking-service
           predicates:
             - Path=/bugs/**
           filters:
-            - RewritePath=/bugs/(?<segment>.*), /$\{segment}
+            - RewritePath=/bugs/(?<segment>.*), /${segment}
         - id: release-service
           uri: lb://release-service
           predicates:
             - Path=/releases/**
           filters:
-            - RewritePath=/releases/(?<segment>.*), /$\{segment}
+            - RewritePath=/releases/(?<segment>.*), /${segment}
 eureka:
   client:
     service-url:
