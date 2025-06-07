@@ -62,4 +62,6 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Integer> {
         @Query(value = "CALL GetUserStoriesByProjectId(:projectId)", nativeQuery = true)
         List<UserStory> getUserStoriesByProjectId(@Param("projectId") String projectId);
 
+        @Query(value = "CALL GetUserStoriesBySprintId(:sprintId)", nativeQuery = true)
+        List<UserStory> getUserStoriesBySprintId(@Param("sprintId") Integer projectId);
 }

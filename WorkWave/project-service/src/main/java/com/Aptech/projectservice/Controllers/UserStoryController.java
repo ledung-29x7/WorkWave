@@ -128,4 +128,14 @@ public class UserStoryController {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @GetMapping("/sprint/{sprintId}")
+    public ApiResponse<List<UserStoryResponseDto>> getUserStoriesBySprint(@PathVariable("sprintId") Integer sprintId) {
+        List<UserStoryResponseDto> stories = userStoryService.getUserStoriesBySprint(sprintId);
+        return ApiResponse.<List<UserStoryResponseDto>>builder()
+                .status("SUCCESS")
+                .data(stories)
+                .build();
+    }
+
 }

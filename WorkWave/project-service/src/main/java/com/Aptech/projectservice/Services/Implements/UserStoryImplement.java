@@ -110,4 +110,10 @@ public class UserStoryImplement implements UserStoryService {
         List<UserStory> stories = userStoryRepository.getUserStoriesByProjectId(projectId);
         return stories.stream().map(userStoryMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<UserStoryResponseDto> getUserStoriesBySprint(Integer sprintId) {
+        List<UserStory> stories = userStoryRepository.getUserStoriesBySprintId(sprintId);
+        return stories.stream().map(userStoryMapper::toDto).collect(Collectors.toList());
+    }
 }

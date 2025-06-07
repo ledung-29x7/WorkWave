@@ -4,6 +4,7 @@ import java.text.ParseException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -38,6 +39,11 @@ public class GlobalExceptionHandler {
             return buildErrorResponse(ErrorCode.USER_ALREADY_HAS_THIS_ROLE);
         }
         return buildErrorResponse(ErrorCode.UNCATEGORIZED_EXCEPTION);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse<Object>> handlingAccessDeniedException(AccessDeniedException exception) {
+        return buildErrorResponse(ErrorCode.UNAUTHORIZED);
     }
 
     private ResponseEntity<ApiResponse<Object>> buildErrorResponse(ErrorCode errorCode) {
