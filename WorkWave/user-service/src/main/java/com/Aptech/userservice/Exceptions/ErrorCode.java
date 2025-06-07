@@ -16,7 +16,7 @@ public enum ErrorCode {
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    USER_ALREADY_HAS_THIS_ROLE(1009, "User already has this role", HttpStatus.BAD_REQUEST); // sửa mã khác 1008
+    USER_ALREADY_HAS_THIS_ROLE(1009, "User already has this role", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

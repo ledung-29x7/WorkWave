@@ -20,4 +20,6 @@ public interface UserStoryService {
 
     public List<UserStoryResponseDto> getUserStoriesByProject(String projectId);
 
+    public List<UserStoryResponseDto> getUserStoriesBySprint(Integer sprintId);
+
 }
