@@ -23,8 +23,8 @@ import lombok.experimental.FieldDefaults;
 public class ProjectStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "status_id")
+    @Column(name = "StatusId")
     Integer statusId;
-    @Column(name = "status_name")
+    @Column(name = "StatusName")
     String statusName;
 }

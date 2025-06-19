@@ -18,7 +18,6 @@ public class CreateBugRequest {
     Integer taskId;
     String title;
     String description;
-    String reportedBy;
     String assignedTo;
     Integer severityId;
     Integer priorityId;

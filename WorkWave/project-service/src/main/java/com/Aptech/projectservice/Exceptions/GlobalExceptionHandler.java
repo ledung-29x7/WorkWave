@@ -37,6 +37,10 @@ public class GlobalExceptionHandler {
         if (exception.getMessage() != null && exception.getMessage().contains("User already has this role")) {
             return buildErrorResponse(ErrorCode.USER_ALREADY_HAS_THIS_ROLE);
         }
+        if (exception.getMessage() != null
+                && exception.getMessage().contains("Another sprint is already active in this project.")) {
+            return buildErrorResponse(ErrorCode.USERSTORY_ALREADY_HAS_THIS_ACTIVE);
+        }
         return buildErrorResponse(ErrorCode.UNCATEGORIZED_EXCEPTION);
     }
 

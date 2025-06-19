@@ -1,6 +1,8 @@
 package com.Aptech.projectservice.Services.Implements;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -9,9 +11,13 @@ import com.Aptech.projectservice.Dtos.Request.UserStoryRequestDto;
 import com.Aptech.projectservice.Dtos.Response.UserStoryResponseDto;
 import com.Aptech.projectservice.Entitys.UserStory;
 import com.Aptech.projectservice.Mappers.UserStoryMapper;
+import com.Aptech.projectservice.Repositorys.PriorityRepository;
+import com.Aptech.projectservice.Repositorys.UserLookupRepository;
 import com.Aptech.projectservice.Repositorys.UserStoryRepository;
+import com.Aptech.projectservice.Repositorys.UserStoryStatusRepository;
 import com.Aptech.projectservice.Services.Interfaces.UserStoryService;
 import com.Aptech.projectservice.event.KafkaProducerService;
+import com.aptech.common.event.email.NotificationEvent;
 import com.aptech.common.event.project.UserStoryCreatedEvent;
 import com.aptech.common.event.project.UserStoryDeletedEvent;
 import com.aptech.common.event.project.UserStoryUpdatedEvent;
@@ -28,6 +34,9 @@ public class UserStoryImplement implements UserStoryService {
     UserStoryRepository userStoryRepository;
     UserStoryMapper userStoryMapper;
     KafkaProducerService kafkaProducerService;
+    PriorityRepository priorityRepository;
+    UserLookupRepository userLookupRepository;
+    UserStoryStatusRepository userStoryStatusRepository;
 
     @Transactional
     public void createUserStory(UserStoryRequestDto request, String createdBy, String projectId) {
@@ -83,7 +92,25 @@ public class UserStoryImplement implements UserStoryService {
                 request.getAssignedTo(),
                 request.getStatusId());
 
+        // Gửi event userstory-events luôn
         kafkaProducerService.send("userstory-events", event);
+
+        // Lấy thông tin user được assign
+        var user = userLookupRepository.getUserById(request.getAssignedTo());
+        if (user != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("storyName", request.getName());
+            data.put("priority", priorityRepository.getPriorityById(request.getPriorityId()).getPriorityName());
+            data.put("Status", userStoryStatusRepository.getStatusById(request.getStatusId()).getStatusName());
+
+            NotificationEvent event_email = new NotificationEvent(
+                    "USERSTORY_UPDATED",
+                    user.getEmail(),
+                    "d-f2d205a6bd714f228a27463ecb155700", // template ID
+                    data);
+
+            kafkaProducerService.send("notification-events", event_email);
+        }
     }
 
     @Transactional

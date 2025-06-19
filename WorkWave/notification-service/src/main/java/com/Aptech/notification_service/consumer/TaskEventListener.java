@@ -1,5 +1,6 @@
 package com.Aptech.notification_service.consumer;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -17,17 +18,23 @@ public class TaskEventListener {
     private final SimpMessagingTemplate messagingTemplate;
 
     @KafkaListener(topics = "task-events", groupId = "notification-group")
-    public void handleTaskCreated(TaskCreatedEvent event) {
-        messagingTemplate.convertAndSend("/topic/task-created", event);
-    }
+    public void handleTaskEvents(ConsumerRecord<String, Object> record) {
+        Object payload = record.value();
 
-    @KafkaListener(topics = "task-events", groupId = "notification-group")
-    public void handleTaskUpdated(TaskUpdatedEvent event) {
-        messagingTemplate.convertAndSend("/topic/task-updated", event);
-    }
+        if (payload instanceof TaskCreatedEvent createdEvent) {
+            messagingTemplate.convertAndSend("/topic/task-created", createdEvent);
+            System.out.println("📤 Sent WebSocket: task-created");
 
-    @KafkaListener(topics = "task-events", groupId = "notification-group")
-    public void handleTaskDeleted(TaskDeletedEvent event) {
-        messagingTemplate.convertAndSend("/topic/task-deleted", event);
+        } else if (payload instanceof TaskUpdatedEvent updatedEvent) {
+            messagingTemplate.convertAndSend("/topic/task-updated", updatedEvent);
+            System.out.println("📤 Sent WebSocket: task-updated");
+
+        } else if (payload instanceof TaskDeletedEvent deletedEvent) {
+            messagingTemplate.convertAndSend("/topic/task-deleted", deletedEvent);
+            System.out.println("📤 Sent WebSocket: task-deleted");
+
+        } else {
+            System.err.println("⚠️ Unknown task event type: " + payload.getClass().getName());
+        }
     }
 }

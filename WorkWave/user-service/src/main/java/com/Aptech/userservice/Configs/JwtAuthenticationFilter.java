@@ -49,6 +49,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (tokenProvider.isTokenBlacklisted(token)) {
+            System.out.println("🚫 Token is blacklisted");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"FAILURE\", \"message\":\"Token is blacklisted\"}");
+            return;
+        }
+
         String userId = null;
         try {
             userId = tokenProvider.getUserIdFromToken(token);
