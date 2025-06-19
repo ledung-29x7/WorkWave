@@ -1,6 +1,10 @@
 server:
   port: 8086
-
+sendgrid:
+  api:
+    key:
+  sender:
+    email: lechungdung29@gmail.com
 spring:
   application:
     name: notification-service
