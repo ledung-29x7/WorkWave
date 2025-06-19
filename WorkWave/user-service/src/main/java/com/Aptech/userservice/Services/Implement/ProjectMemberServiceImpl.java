@@ -1,6 +1,8 @@
 package com.Aptech.userservice.Services.Implement;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -10,9 +12,13 @@ import com.Aptech.userservice.Dtos.Response.ProjectMemberResponse;
 import com.Aptech.userservice.Entitys.Users;
 import com.Aptech.userservice.Exceptions.AppException;
 import com.Aptech.userservice.Exceptions.ErrorCode;
+import com.Aptech.userservice.Repositorys.ProjectRepository;
 import com.Aptech.userservice.Repositorys.ProjectRoleAssignmentRepository;
+import com.Aptech.userservice.Repositorys.RoleRepository;
 import com.Aptech.userservice.Repositorys.UserRepository;
 import com.Aptech.userservice.Services.Interfaces.IProjectMemberService;
+import com.Aptech.userservice.event.KafkaProducerService;
+import com.aptech.common.event.email.NotificationEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +28,9 @@ public class ProjectMemberServiceImpl implements IProjectMemberService {
 
     private final ProjectRoleAssignmentRepository repository;
     private final UserRepository userRepository;
+    private final KafkaProducerService kafkaProducerService;
+    private final RoleRepository roleRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public List<ProjectMemberResponse> getMembers(String projectId) {
@@ -42,6 +51,20 @@ public class ProjectMemberServiceImpl implements IProjectMemberService {
         Users user = userRepository.FindByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         repository.assignUser(id, user.getUserId(), projectId, request.getRoleId());
+
+        var project = projectRepository.getById(projectId);
+        Map<String, String> data = new HashMap<>();
+        data.put("projectName", project.getName());
+        data.put("role", roleRepository.getById(request.getRoleId()).getRoleName());
+
+        NotificationEvent event = new NotificationEvent(
+                "USER_ASSIGNED",
+                request.getEmail(),
+                "d-84b65a7f836043f29101eb5985725c89", // template ID
+                data);
+
+        kafkaProducerService.send("notification-events", event);
+
     }
 
     @Override

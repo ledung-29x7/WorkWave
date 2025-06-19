@@ -17,8 +17,9 @@ public enum ErrorCode {
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     USER_ALREADY_HAS_THIS_ROLE(1008, "User already has this role", HttpStatus.BAD_REQUEST),
-
-    ;
+    USERSTORY_ALREADY_HAS_THIS_ACTIVE(1008, "Complete the active sprint before you start a new one.",
+            HttpStatus.BAD_REQUEST),
+            ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

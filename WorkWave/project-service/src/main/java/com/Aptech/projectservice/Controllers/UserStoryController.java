@@ -29,7 +29,7 @@ public class UserStoryController {
     private final UserStoryService userStoryService;
     private final JwtTokenProvider jwt;
 
-    @PreAuthorize("hasAuthority('USER_STORY_CREATE')")
+    @PreAuthorize("hasAuthority('STORY_CREATE')")
     @PostMapping()
     public ApiResponse<String> createUserStory(
             @RequestBody UserStoryRequestDto request, HttpServletRequest http) {
@@ -49,7 +49,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @PreAuthorize("hasAuthority('STORY_VIEW')")
     @GetMapping("/{id}")
     public ApiResponse<UserStoryResponseDto> getUserStoryById(@PathVariable("id") Integer id) {
         UserStoryResponseDto story = userStoryService.getUserStoryById(id);
@@ -59,7 +59,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_UPDATE')")
+    @PreAuthorize("hasAuthority('STORY_UPDATE')")
     @PutMapping("/{id}")
     public ApiResponse<String> updateUserStory(
             @PathVariable("id") Integer id,
@@ -79,7 +79,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_DELETE')")
+    @PreAuthorize("hasAuthority('STORY_DELETE')")
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteUserStory(@PathVariable("id") Integer id) {
         userStoryService.deleteUserStory(id);
@@ -89,7 +89,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @PreAuthorize("hasAuthority('STORY_VIEW')")
     @GetMapping("/{epicId}/epic")
     public ApiResponse<List<UserStoryResponseDto>> getUserStoriesByEpic(@PathVariable("epicId") Integer epicId) {
         List<UserStoryResponseDto> stories = userStoryService.getUserStoriesByEpic(epicId);
@@ -99,7 +99,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @PreAuthorize("hasAuthority('STORY_VIEW')")
     @GetMapping("/assigned")
     public ApiResponse<List<UserStoryResponseDto>> getUserStoriesByUser(HttpServletRequest http) {
         String token = http.getHeader("Authorization").substring(7);
@@ -117,7 +117,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @PreAuthorize("hasAuthority('STORY_VIEW')")
     @GetMapping("/project")
     public ApiResponse<List<UserStoryResponseDto>> getUserStoriesByProject() {
         String projectId = ProjectContext.getProjectId();
@@ -128,7 +128,7 @@ public class UserStoryController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('USER_STORY_VIEW')")
+    @PreAuthorize("hasAuthority('STORY_VIEW')")
     @GetMapping("/sprint/{sprintId}")
     public ApiResponse<List<UserStoryResponseDto>> getUserStoriesBySprint(@PathVariable("sprintId") Integer sprintId) {
         List<UserStoryResponseDto> stories = userStoryService.getUserStoriesBySprint(sprintId);

@@ -47,8 +47,10 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) throws Exception {
-        String uid = jwt.getUserIdFromToken(request.getHeader("Authorization").substring(7));
+        String token = request.getHeader("Authorization").substring(7);
+        String uid = jwt.getUserIdFromToken(token);
         auth.logout(uid);
+        jwt.blacklistToken(token);
         return ResponseEntity.ok(new ApiResponse<>("success", null, "Logout", null));
     }
 

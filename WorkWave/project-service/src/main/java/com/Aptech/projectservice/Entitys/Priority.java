@@ -23,8 +23,8 @@ import lombok.experimental.FieldDefaults;
 public class Priority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "priority_id")
+    @Column(name = "PriorityId")
     Integer priorityId;
-    @Column(name = "priority_name")
+    @Column(name = "PriorityName")
     String priorityName;
 }

@@ -1,5 +1,6 @@
 package com.Aptech.bugtrackingservice.Services.Implements;
 
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,14 +31,19 @@ public class BugServiceImpl implements BugService {
 
     @Override
     public void createBug(CreateBugRequest request, String createdBy) {
+        String assignedTo = request.getAssignedTo();
+        if (assignedTo != null && assignedTo.trim().isEmpty()) {
+            assignedTo = null;
+        }
+
         bugRepository.createBug(
                 request.getProjectId(),
                 request.getStoryId(),
                 request.getTaskId(),
                 request.getTitle(),
                 request.getDescription(),
-                request.getReportedBy(),
-                request.getAssignedTo(),
+                createdBy,
+                assignedTo,
                 request.getSeverityId(),
                 request.getPriorityId(),
                 request.getStatusId(),
