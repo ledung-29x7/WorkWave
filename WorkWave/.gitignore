@@ -13,7 +13,7 @@ target/
 .springBeans
 .sts4-cache
 .DS_Store
-rsa/
+**/src/main/resources/rsa/
 ### IntelliJ IDEA ###
 .idea
 *.iws
