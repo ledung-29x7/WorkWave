@@ -17,3 +17,5 @@ Bug Tracking: Log and track issues throughout the software development lifecycle
 Microservices Architecture: Decoupled services (user, project, task, etc.) with API Gateway and Eureka for service discovery and routing.
 
 Security: Implemented Spring Security and JWT for user authentication and authorization.
+
+- rsa key is required to run the project. contact lechungdung29@gmail.com for more details
